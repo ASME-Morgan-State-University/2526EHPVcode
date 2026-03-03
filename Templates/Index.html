@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sensor Dashboard</title>
+    <style>
+        body { background:#111; color:#0f0; font-family: Arial; }
+        h1 { text-align:center; }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            padding: 20px;
+        }
+        .card {
+            background:#222;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<h1>FULL SENSOR DASHBOARD</h1>
+
+<div class="grid">
+    <div class="card">Temperature: <span id="temp"></span></div>
+    <div class="card">Humidity: <span id="hum"></span></div>
+    <div class="card">Pitch: <span id="pitch"></span></div>
+    <div class="card">Roll: <span id="roll"></span></div>
+    <div class="card">Yaw: <span id="yaw"></span></div>
+    <div class="card">Motor Voltage: <span id="mv"></span></div>
+    <div class="card">Motor Current: <span id="mc"></span></div>
+    <div class="card">Aux Voltage: <span id="av"></span></div>
+    <div class="card">Aux Current: <span id="ac"></span></div>
+    <div class="card">Latitude: <span id="lat"></span></div>
+    <div class="card">Longitude: <span id="lon"></span></div>
+    <div class="card">Satellites: <span id="sat"></span></div>
+</div>
+
+<script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+<script>
+    const socket = io();
+
+    socket.on("sensor_data", (data) => {
+        document.getElementById("temp").innerText = data.temperature.toFixed(2);
+        document.getElementById("hum").innerText = data.humidity.toFixed(2);
+
+        document.getElementById("pitch").innerText = data.pitch.toFixed(2);
+        document.getElementById("roll").innerText = data.roll.toFixed(2);
+        document.getElementById("yaw").innerText = data.yaw.toFixed(2);
+
+        document.getElementById("mv").innerText = data.motorVoltage.toFixed(2);
+        document.getElementById("mc").innerText = data.motorCurrent.toFixed(2);
+
+        document.getElementById("av").innerText = data.auxVoltage.toFixed(2);
+        document.getElementById("ac").innerText = data.auxCurrent.toFixed(2);
+
+        document.getElementById("lat").innerText = data.latitude.toFixed(6);
+        document.getElementById("lon").innerText = data.longitude.toFixed(6);
+        document.getElementById("sat").innerText = data.satellites;
+    });
+</script>
+
+</body>
+</html>
