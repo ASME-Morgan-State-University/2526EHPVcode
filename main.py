@@ -1,4 +1,6 @@
 import asyncio
+# from flask import Flask, render_template
+# from flask_socketio import SocketIO, send, emit, join_room, leave_room
 import Sensor.Temp as Temp
 import Sensor.imu as imu
 import Sensor.Motor as Motor
@@ -6,6 +8,11 @@ import Sensor.auxreader as auxreader
 import Sensor.gps as gps
 
 
+# app = Flask(__name__)
+# socketio = SocketIO(app)
+# @app.route("/")
+# def index():
+#     return render_template("index.html")
 # Sensor variables
 P = R = Y = 0
 xaccel = yaccel = zaccel = 0
@@ -14,8 +21,7 @@ temp = Hum = 0
 Motorvoltage = Motorcurrent = 0
 Auxvoltage = Auxcurrent = 0
 Lat = Lon = Sc = 0
-#
-#
+
 def get_sensor_data():
     return [
     Lat, Lon, Sc,  Auxvoltage,
@@ -24,6 +30,15 @@ def get_sensor_data():
     zaccel,xmag, ymag, zmag,P,
     R, Y,temp, Hum,
     ]
+
+# @socketio.on('connect')
+# def handle_join(data):
+#     get_sensor_data() = data # Store username by session ID
+#     emit("message", f"{data} stored values", broadcast=True)
+
+# @socketio.on('disconnect')
+# def handle_disconnect():
+#     emit("Goodbye", broadcast=True)
 
 # Sensor tasks
 async def temp_sensors():
