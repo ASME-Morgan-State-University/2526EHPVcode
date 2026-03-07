@@ -1,14 +1,10 @@
 import asyncio
-from flask import Flask, render_template
-from flask_socketio import SocketIO
-
 import Sensor.Temp as Temp
 import Sensor.imu as imu
-import Sensor.Motor as Motorteam
+import Sensor.Motor as Motor
 import Sensor.auxreader as auxreader
+import Sensor.gps as gps
 
-app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins="*")
 
 # Sensor variables
 P = R = Y = 0
@@ -17,49 +13,17 @@ xmag = ymag = zmag = 0
 temp = Hum = 0
 Motorvoltage = Motorcurrent = 0
 Auxvoltage = Auxcurrent = 0
-Lat = Lon = Sc = 0 # Placeholder for GPS data
-
-
-
-@app.route('/')
-def index():
-    return render_template('index.html')
-
-@socketio.on('connect')
-def connect():
-    print("Client connected")
-
-@socketio.on('disconnect')
-def disconnect():
-    print("Client disconnected")
-
-async def broadcast_sensor_data():
-    """Send sensor data to all clients every 100ms"""
-    global temp, Hum, P, R, Y, xaccel, yaccel, zaccel, xmag, ymag, zmag
-    global Motorvoltage, Motorcurrent, Auxvoltage, Auxcurrent
-
-    while True:
-        socketio.emit("sensor_data", {
-            "temperature": temp,
-            "humidity": Hum,
-            "pitch": P,
-            "roll": R,
-            "yaw": Y,
-            "xAccel": xaccel,
-            "yAccel": yaccel,
-            "zAccel": zaccel,
-            "xMag": xmag,
-            "yMag": ymag,
-            "zMag": zmag,
-            "motorVoltage": Motorvoltage,
-            "motorCurrent": Motorcurrent,
-            "auxVoltage": Auxvoltage,
-            "auxCurrent": Auxcurrent,
-            "Latitude": Lat,  # Placeholder for GPS data
-            "Longitude": Lon, # Placeholder for GPS data
-            "satellites": SC,
-        })
-        await asyncio.sleep(0.1)  # 100ms
+Lat = Lon = Sc = 0
+#
+#
+def get_sensor_data():
+    return [
+    Lat, Lon, Sc,  Auxvoltage,
+    Auxcurrent,  Motorvoltage,
+    Motorcurrent,xaccel, yaccel,
+    zaccel,xmag, ymag, zmag,P,
+    R, Y,temp, Hum,
+    ]
 
 # Sensor tasks
 async def temp_sensors():
@@ -68,29 +32,36 @@ async def temp_sensors():
         temp = await asyncio.to_thread(Temp.getTemperature)
         Hum = await asyncio.to_thread(Temp.getHumidity)
         await asyncio.sleep(0.1)
-
 async def imu_sensors():
     global P, R, Y, xaccel, yaccel, zaccel, xmag, ymag, zmag
     while True:
         P, Y, R = await asyncio.to_thread(imu.getAttitude)
         xaccel, yaccel, zaccel = await asyncio.to_thread(imu.getAccleartion)
-        xmag, ymag, zmag = await asyncio.to_thread(imu.getMag)
+        xmag, ymag, zmag = await asyncio.to_thread(imu.getMagnetometer)
         await asyncio.sleep(0.1)
-
 async def motor_sensors():
     global Motorvoltage, Motorcurrent
     while True:
         Motorvoltage = await asyncio.to_thread(Motor.getMotorVoltag)
         Motorcurrent = await asyncio.to_thread(Motor.getMotorCurrent)
         await asyncio.sleep(0.1)
-
 async def aux_sensors():
     global Auxvoltage, Auxcurrent
     while True:
         Auxvoltage = await asyncio.to_thread(auxreader.getAuxVoltag)
         Auxcurrent = await asyncio.to_thread(auxreader.getAuxCurrent)
         await asyncio.sleep(0.1)
+async def gps_sensors():
+    global Lat, Lon, Sc
+    while True:
+        Lat, Lon, Sc = await asyncio.to_thread(gps.getGPS)
+        await asyncio.sleep(0.1)
 
+# Printer task
+async def printer():
+    while True:
+        print(*get_sensor_data())
+        await asyncio.sleep(1)
 
 async def main():
     await asyncio.gather(
@@ -98,9 +69,9 @@ async def main():
         imu_sensors(),
         motor_sensors(),
         aux_sensors(),
-        broadcast_sensor_data()
+        gps_sensors(),
+        printer()
     )
 
 if __name__ == "__main__":
-    socketio.start_background_task(main)
-    socketio.run(app, host="0.0.0.0", port=5000)
+    asyncio.run(main())
