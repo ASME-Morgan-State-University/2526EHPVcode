@@ -106,11 +106,6 @@ async def broadcast_task():
         socketio.emit("telemetry", get_sensor_data())
         await asyncio.sleep(0.1)   # 10 Hz updates
 
-# Printer task
-async def printer():
-    while True:
-        print(get_sensor_data())
-        await asyncio.sleep(1)
 
 async def main():
     await asyncio.gather(
@@ -119,7 +114,6 @@ async def main():
         motor_sensors(),
         aux_sensors(),
         gps_sensors(),
-        printer(),
         broadcast_task()
     )
 def start_async_loop():
