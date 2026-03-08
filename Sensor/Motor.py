@@ -1,13 +1,13 @@
 import random
 
-def getMotorVoltag():
+def getMV():
     try:
         return int(random.random() * 100) % 100 #%
     except Exception as e:
         print(f"Error setting motor speed: {e}")
         return 0
     
-def getMotorCurrent():
+def getMC():
     try:
         return int(random.random() * 100) % 100 #%
     except Exception as e:

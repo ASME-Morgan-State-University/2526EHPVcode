@@ -1,6 +1,7 @@
 import asyncio
-# from flask import Flask, render_template
-# from flask_socketio import SocketIO, send, emit, join_room, leave_room
+from flask import Flask, render_template, request
+from flask_socketio import SocketIO, send, emit
+
 import Sensor.Temp as Temp
 import Sensor.imu as imu
 import Sensor.Motor as Motor
@@ -8,22 +9,29 @@ import Sensor.auxreader as auxreader
 import Sensor.gps as gps
 
 
-# app = Flask(__name__)
-# socketio = SocketIO(app)
-# @app.route("/")
-# def index():
-#     return render_template("index.html")
+# Flask setup
+app = Flask(__name__)
+socketio = SocketIO(app, async_mode="threading")
+
+# Track connected clients
+clients = set()
+
 # Sensor variables
+#IMU
 P = R = Y = 0
 xaccel = yaccel = zaccel = 0
 xmag = ymag = zmag = 0
+#Temp
 temp = Hum = 0
+#Motor
 Motorvoltage = Motorcurrent = 0
+#Aux
 Auxvoltage = Auxcurrent = 0
+#GPS
 Lat = Lon = Sc = 0
 
 def get_sensor_data():
-    return [
+    return[
     Lat, Lon, Sc,  Auxvoltage,
     Auxcurrent,  Motorvoltage,
     Motorcurrent,xaccel, yaccel,
@@ -31,14 +39,31 @@ def get_sensor_data():
     R, Y,temp, Hum,
     ]
 
-# @socketio.on('connect')
-# def handle_join(data):
-#     get_sensor_data() = data # Store username by session ID
-#     emit("message", f"{data} stored values", broadcast=True)
 
-# @socketio.on('disconnect')
-# def handle_disconnect():
-#     emit("Goodbye", broadcast=True)
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+@socketio.on("connect")
+def handle_connect():
+    clients.add(request.sid)
+    print("Client connected:", request.sid)
+    print("Total clients:", len(clients))
+
+# Send current telemetry to new client
+    socketio.emit(
+        "telemetry",
+        get_sensor_data(),
+        to=request.sid
+    )
+
+
+@socketio.on("disconnect")
+def handle_disconnect():
+    clients.discard(request.sid)
+
+    print("Client disconnected:", request.sid)
+    print("Total clients:", len(clients))
 
 # Sensor tasks
 async def temp_sensors():
@@ -47,35 +72,44 @@ async def temp_sensors():
         temp = await asyncio.to_thread(Temp.getTemperature)
         Hum = await asyncio.to_thread(Temp.getHumidity)
         await asyncio.sleep(0.1)
+        
 async def imu_sensors():
     global P, R, Y, xaccel, yaccel, zaccel, xmag, ymag, zmag
     while True:
         P, Y, R = await asyncio.to_thread(imu.getAttitude)
-        xaccel, yaccel, zaccel = await asyncio.to_thread(imu.getAccleartion)
+        xaccel, yaccel, zaccel = await asyncio.to_thread(imu.getPA)
         xmag, ymag, zmag = await asyncio.to_thread(imu.getMagnetometer)
         await asyncio.sleep(0.1)
+        
 async def motor_sensors():
     global Motorvoltage, Motorcurrent
     while True:
-        Motorvoltage = await asyncio.to_thread(Motor.getMotorVoltag)
-        Motorcurrent = await asyncio.to_thread(Motor.getMotorCurrent)
+        Motorvoltage = await asyncio.to_thread(Motor.getMV)
+        Motorcurrent = await asyncio.to_thread(Motor.getMC)
         await asyncio.sleep(0.1)
+        
 async def aux_sensors():
     global Auxvoltage, Auxcurrent
     while True:
-        Auxvoltage = await asyncio.to_thread(auxreader.getAuxVoltag)
-        Auxcurrent = await asyncio.to_thread(auxreader.getAuxCurrent)
+        Auxvoltage = await asyncio.to_thread(auxreader.getAV)
+        Auxcurrent = await asyncio.to_thread(auxreader.getAC)
         await asyncio.sleep(0.1)
+        
 async def gps_sensors():
     global Lat, Lon, Sc
     while True:
         Lat, Lon, Sc = await asyncio.to_thread(gps.getGPS)
         await asyncio.sleep(0.1)
+        
+async def broadcast_task():
+    while True:
+        socketio.emit("telemetry", get_sensor_data())
+        await asyncio.sleep(0.1)   # 10 Hz updates
 
 # Printer task
 async def printer():
     while True:
-        print(*get_sensor_data())
+        print(get_sensor_data())
         await asyncio.sleep(1)
 
 async def main():
@@ -85,8 +119,21 @@ async def main():
         motor_sensors(),
         aux_sensors(),
         gps_sensors(),
-        printer()
+        printer(),
+        broadcast_task()
     )
+def start_async_loop():
+    asyncio.run(main())
 
 if __name__ == "__main__":
-    asyncio.run(main())
+
+    # Start sensor system
+    socketio.start_background_task(start_async_loop)
+
+    # Start web server
+    socketio.run(
+        app,
+        host="0.0.0.0",
+        port=5000,
+        debug=True
+    )
