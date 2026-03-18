@@ -1,5 +1,5 @@
 import random
-def getAccleartion():
+def getPA():
     try:
         random_numbers = [float(random.randint(1, 100)) for _ in range(3)]
         xaccel = random_numbers[0]
