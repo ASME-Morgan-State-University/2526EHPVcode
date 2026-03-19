@@ -18,37 +18,42 @@
       padding: 10px;
       font-size: 20px;
     }
-
-    .status-circle {
-      width: 25px;
-      height: 25px;
-      border-radius: 50%;
-      display: inline-block;
-      border: 2px solid #333;
-    }
-
-    .green { background-color: #4CAF50; }
-    .red { background-color: #f44336; }
-
-    td { vertical-align: middle; }
   </style>
 </head>
-
 <body>
+<div class="container">
+ <div class="row align-items-start">
+      <!-- Sensor Values -->
+ <!-- LEFT: Horizontal Bar Chart -->
+    <div class="col-md-6">
+      <h4>Horizontal Bar Chart</h4>
+      <div id="chartBar"></div>
+       <div class="header mt-4">Sensor States</div>
+       <table class="table table-bordered border-dark text-center">
+          <tr class="table-primary text-dark">
+            <td>Sensor1</td>
+            <td>Sensor2</td>
+            <td>Sensor3</td>
+            <div class="w-100"></div>
+            <td>Sensor4</td>
+             <td>Sensor5</td>
+          </tr>
+        </tbody>
+        </table>
+    </div>
 
-<div class="container mt-4">
-  <div class="row">
-
-    <!-- LEFT SIDE: Tables -->
+    <!-- RIGHT: Table + Line Charts -->
     <div class="col-md-6">
 
-      <!-- Sensor Values -->
+      <!-- TABLE (TOP RIGHT) -->
       <table class="table table-bordered border-dark text-center">
         <thead class="bg-primary text-white">
           <tr>
             <th>Sensor1</th>
             <th>Sensor2</th>
             <th>Sensor3</th>
+            <th>Sensor4</th>
+            <th>Sensor5</th>
           </tr>
         </thead>
         <tbody>
@@ -56,56 +61,23 @@
             <td>Values1</td>
             <td>Values2</td>
             <td>Values3</td>
+            <td>Values4</td>
+            <td>Values5</td>
           </tr>
         </tbody>
       </table>
 
-      <!-- Sensor States -->
-      <div class="header mt-4">Sensor States</div>
-      <table class="table table-bordered text-center">
-        <tbody>
-          <tr>
-            <td class="text-start">Sensor 1</td>
-            <td><span class="status-circle green"></span></td>
-            <td><span class="status-circle red"></span></td>
-          </tr>
-          <tr>
-            <td class="text-start">Sensor 2</td>
-            <td><span class="status-circle green"></span></td>
-            <td><span class="status-circle red"></span></td>
-          </tr>
-          <tr>
-            <td class="text-start">Sensor 3</td>
-            <td><span class="status-circle green"></span></td>
-            <td><span class="status-circle red"></span></td>
-          </tr>
-          <tr>
-            <td class="text-start">Sensor 4</td>
-            <td><span class="status-circle green"></span></td>
-            <td><span class="status-circle red"></span></td>
-          </tr>
-        </tbody>
-      </table>
-
-    </div>
-
-    <!-- RIGHT SIDE: Charts -->
-    <div class="col-md-6">
-
-      <h4>Line Chart 1</h4>
+      <!-- LINE CHARTS UNDER TABLE -->
+      <h4 class="mt-4">Line Chart 1</h4>
       <div id="chart1"></div>
 
       <h4 class="mt-4">Line Chart 2</h4>
       <div id="chart2"></div>
 
-      <h4 class="mt-4">Horizontal Bar Chart</h4>
-      <div id="chartBar"></div>
-
     </div>
 
-  </div> <!-- End row -->
-</div> <!-- End container -->
-
+  </div>
+</div>
 <script>
   // LINE CHART 1
   var options1 = {
@@ -144,6 +116,5 @@
   var chartBar = new ApexCharts(document.querySelector("#chartBar"), optionsBar);
   chartBar.render();
 </script>
-
 </body>
 </html>
