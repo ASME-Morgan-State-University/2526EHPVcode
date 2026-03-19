@@ -1,4 +1,5 @@
 import asyncio
+import threading
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, send, emit
 
@@ -31,13 +32,23 @@ Auxvoltage = Auxcurrent = 0
 Lat = Lon = Sc = 0
 
 def get_sensor_data():
-    return[
-    Lat, Lon, Sc,  Auxvoltage,
-    Auxcurrent,  Motorvoltage,
-    Motorcurrent,xaccel, yaccel,
-    zaccel,xmag, ymag, zmag,P,
-    R, Y,temp, Hum,
-    ]
+    return {
+        "latitude": Lat,
+        "longitude": Lon,
+        "satellites": Sc,
+        "auxVoltage": Auxvoltage,
+        "auxCurrent": Auxcurrent,
+        "motorVoltage": Motorvoltage,
+        "motorCurrent": Motorcurrent,
+        "xAccel": xaccel,
+        "yAccel": yaccel,
+        "zAccel": zaccel,
+        "pitch": P,
+        "roll": R,
+        "yaw": Y,
+        "temperature": temp,
+        "humidity": Hum
+    }
 
 
 @app.route("/")
@@ -79,33 +90,33 @@ async def imu_sensors():
         P, Y, R = await asyncio.to_thread(imu.getAttitude)
         xaccel, yaccel, zaccel = await asyncio.to_thread(imu.getPA)
         xmag, ymag, zmag = await asyncio.to_thread(imu.getMagnetometer)
-        await asyncio.sleep(0.1)
+        await asyncio.sleep(0.5)
         
 async def motor_sensors():
     global Motorvoltage, Motorcurrent
     while True:
         Motorvoltage = await asyncio.to_thread(Motor.getMV)
         Motorcurrent = await asyncio.to_thread(Motor.getMC)
-        await asyncio.sleep(0.1)
+        await asyncio.sleep(0.5)
         
 async def aux_sensors():
     global Auxvoltage, Auxcurrent
     while True:
         Auxvoltage = await asyncio.to_thread(auxreader.getAV)
         Auxcurrent = await asyncio.to_thread(auxreader.getAC)
-        await asyncio.sleep(0.1)
+        await asyncio.sleep(0.5)
         
 async def gps_sensors():
     global Lat, Lon, Sc
     while True:
         Lat, Lon, Sc = await asyncio.to_thread(gps.getGPS)
-        await asyncio.sleep(0.1)
+        await asyncio.sleep(0.5)
         
 async def broadcast_task():
     while True:
-        socketio.emit("telemetry", get_sensor_data())
-        await asyncio.sleep(0.1)   # 10 Hz updates
-
+        data = get_sensor_data()
+        socketio.emit("telemetry", data)  # OK from thread
+        await asyncio.sleep(0.5)
 
 async def main():
     await asyncio.gather(
@@ -120,14 +131,5 @@ def start_async_loop():
     asyncio.run(main())
 
 if __name__ == "__main__":
-
-    # Start sensor system
-    socketio.start_background_task(start_async_loop)
-
-    # Start web server
-    socketio.run(
-        app,
-        host="0.0.0.0",
-        port=5000,
-        debug=True
-    )
+    threading.Thread(target=start_async_loop).start()
+    socketio.run(app, host="0.0.0.0", port=5000, debug=True)
