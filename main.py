@@ -10,8 +10,8 @@ import Sensor.gps as gps
 
 
 # Flask setup
-app = Flask(__name__, static_folder="static", template_folder="Templates")
-socketio = SocketIO(app, async_mode="threading")
+app = Flask(__name__)
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 # Track connected clients
 clients = set()
