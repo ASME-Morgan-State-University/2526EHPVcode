@@ -1698,78 +1698,31 @@ if (statusSmBarChart3 !== null) {
 }
 
 /*======== 10.1 LINE CHART 01 ========*/
+window.lineChart1Data = [];
+
 var lineChart1 = document.querySelector("#line-chart-1");
+
 if (lineChart1 !== null) {
   var lineChartOption1 = {
     chart: {
       height: 350,
       type: "line",
-      toolbar: {
-        show: false,
-      },
+      toolbar: { show: false },
     },
-    stroke: {
-      width: [2, 3],
-      curve: "smooth",
-      dashArray: [0, 5],
-    },
-    plotOptions: {
-      horizontal: false,
-    },
-    colors: ["#9e6de0", "#fec400"],
     series: [
       {
-        data: [6, 10, 8, 20, 15, 6, 21],
-      },
-      {
-        data: [8, 6, 15, 10, 25, 8, 32],
+        name: "Sensor Data",
+        data: window.lineChart1Data,
       },
     ],
-    labels: [
-      "04 jan",
-      "05 jan",
-      "06 jan",
-      "07 jan",
-      "08 jan",
-      "09 jan",
-      "10 jan",
-    ],
-    markers: {
-      size: [5, 0],
-    },
     xaxis: {
-      axisBorder: {
-        show: false,
-      },
-      axisTicks: {
-        show: false,
-      },
-    },
-    tooltip: {
-      theme: "dark",
-      fixed: {
-        enabled: false,
-      },
-      x: {
-        show: false,
-      },
-      y: {
-        title: {
-          formatter: (labels) => labels,
-        },
-      },
-      marker: {
-        show: true,
-      },
-    },
-    legend: {
-      show: false,
+      categories: [],
     },
   };
-  var randerLineChart1 = new ApexCharts(lineChart1, lineChartOption1);
-  randerLineChart1.render();
-}
 
+  window.lineChart1Instance = new ApexCharts(lineChart1, lineChartOption1);
+  window.lineChart1Instance.render();
+}
 /*======== 10.2 LINE CHART 02 ========*/
 var lineChart2 = document.querySelector("#line-chart-2");
 if (lineChart2 !== null) {

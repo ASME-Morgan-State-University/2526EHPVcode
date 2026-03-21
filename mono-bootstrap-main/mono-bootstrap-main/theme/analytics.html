@@ -68,107 +68,136 @@
     ——— WRAPPER
     ===================================== -->
     <div class="wrapper">
-      
-      
-        <!-- ====================================
-          ——— LEFT SIDEBAR WITH OUT FOOTER
-        ===================================== -->
-
-      <!-- ====================================
-      ——— PAGE WRAPPER
-      ===================================== -->
-      <div class="page-wrapper">
-        
-          <!-- Header -->
-          <header class="main-header" id="header">
-           
-          </header>
-
-        <!-- ====================================
-        ——— CONTENT WRAPPER
-        ===================================== -->
-        <div class="row">
-                    <div class="col-xl-6">
-                    <!-- Page Views  -->
-                    <div class="card card-default" id="page-views">
-                      <div class="card-header">
-                        <h2>Page Views</h2>
+<!-- Section of table and fisrt graph -->
+      <div class="row align-items-start">
+         <div class="col-md-6">
+                      <!-- Acquisition Report -->
+                      <div class="card card-default" id="acquisition-report">
+                        <div class="card-header">
+                          <h2>Power Average</h2>
+                        </div>
+                       <div class="col"></div>
+                       <div class="tab-content" id="myTabContent">
+                        <div id="barchartlg1"></div>
+                       </div>
+                       <div class="card-footer d-flex flex-wrap bg-white">
+                        <a href="#" class="text-uppercase py-3">Acquisition Report</a>
+                       </div>
                       </div>
-                      <div class="card-body py-0" data-simplebar style="height: 392px;">
-                        <table class="table table-borderless table-thead-border">
+                         <div class="card card-default">
+                    <div class="card-header">
+                      <h2>Voltage/Current history</h2>
+                    </div>
+                    <div class="card-body">
+                      <div class="bg-danger d-flex justify-content-between flex-wrap p-5 text-white align-items-lg-end">
+                        <div class="d-flex flex-column">
+                          <span class="h3 text-white">67.0%</span>
+                          <span>vs 65.21% (prev)</span>
+                        </div>
+                        <div>
+                          <span>7%</span>
+                          <i class="mdi mdi-arrow-down-bold"></i>
+                        </div>
+                      </div>
+                      <div id="line-chart-3"></div>
+                    </div>
+                 </div>
+
+
+         </div>
+        <div class="col-md-6">
+                     <!-- Page Views  -->
+                      <div class="card card-default" id="page-views">
+                        <div class="card-header">
+                          <h2>Sensor Values</h2>
+                        </div>
+                          <div class="card-body py-0" data-simplebar style="height: 392px;">
+                            <table class="table table-borderless table-thead-border">
                           <thead>
                             <tr>
-                              <th>Page</th>
-                              <th class="text-right px-3">Page Views</th>
-                              <th class="text-right">Avg Time</th>
+                              <th>Sensor</th>
+                              <th class="text-right px-2">value1</th>
+                              <th class="text-right">value2</th>
+                              <th class="text-right">value3</th>
                             </tr>
+                            
                           </thead>
                           <tbody>
                             <tr>
-                              <td class="text-primary"><a class="link" href="analytics.html">/analytics.html</a></td>
-                              <td class="text-right px-3">521</td>
-                              <td class="text-right">2m:14s</td>
+                              <td class="text-primary"><a> Sensor1</a></td>
+                              <td class="text-right px-3"><span id = "latitude">---</span>°
+                              <td class="text-right"><span id = "longitude">---</span>°
+                              <td class="text-right"><span id = "Satellitecount">---</span>°
                             </tr>
                             <tr>
-                              <td class="text-primary"><a class="link" href="email-inbox.html">/email-inbox.html</a></td>
-                              <td class="text-right px-3">356</td>
-                              <td class="text-right">2m:23s</td>
+                             <td class="text-primary"><a> Sensor2</a></td>
+                              <td class="text-right px-3"><span id ="Auxvoltage">---</span>V
+                              <td class="text-right"><span id="Auxcurrent">---</span>A
                             </tr>
                             <tr>
-                              <td class="text-primary"><a class="link" href="email-compose.html">/email-compose.html</a></td>
-                              <td class="text-right px-3">254</td>
-                              <td class="text-right">2m:2s</td>
+                              <td class="text-primary"><a> Sensor3</a></td>
+                              <td class="text-right px-3"><span id = "Motorvoltage">---</span>V
+                              <td class="text-right"><span id = "Motorcurrent">---</span>A
                             </tr>
                             <tr>
-                              <td class="text-primary"><a class="link" href="charts-chartjs.html">/charts-chartjs.html</a></td>
-                              <td class="text-right px-3">126</td>
-                              <td class="text-right">1m:15s</td>
+                              <td class="text-primary"><a> Sensor4</a></td>
+                              <td class="text-right px-3"><span id = "Xaccel">---</span>m/s^2
+                              <td class="text-right px-3"><span id = "Yaccel">---</span>m/s^2
+                              <td class="text-right px-3"><span id = "Zaccel">---</span>m/s^2
+                            </tr>
+                              <tr>
+                              <td class="text-primary"><a> Sensor4-1</a></td>
+                              <td class="text-right px-3"><span id = "Xmag">---</span>G
+                              <td class="text-right px-3"><span id = "Ymag">---</span>G
+                              <td class="text-right px-3"><span id = "Zmag">---</span>G
+                            </tr>
+                              <tr>
+                              <td class="text-primary"><a> Sensor4-2</a></td>
+                              <td class="text-right px-3"><span id = "Pitch">---</span>°
+                              <td class="text-right px-3"><span id = "Roll">---</span>°
+                              <td class="text-right px-3"><span id = "Yaw">---</span>°
                             </tr>
                             <tr>
-                              <td class="text-primary"><a class="link" href="profile.html">/profile.html</a></td>
-                              <td class="text-right px-3">50</td>
-                              <td class="text-right">1m:7s</td>
+                              <td class="text-primary"><a> Sensor5</a></td>
+                              <td class="text-right px-3"><span id = "Temp">---</span>°C
+                              <td class="text-right"><span id = "Hum">---</span>°C
                             </tr>
                             <tr>
-                              <td class="text-primary"><a class="link" href="general-widgets.html">/general-widgets.html</a></td>
-                              <td class="text-right px-3">50</td>
-                              <td class="text-right">2m:35s</td>
-                            </tr>
-                            <tr>
-                              <td class="text-primary"><a class="link" href="card.html">/card.html</a></td>
-                              <td class="text-right px-3">590</td>
-                              <td class="text-right">5m:55s</td>
-                            </tr>
-                            <tr>
-                              <td class="text-primary"><a class="link" href="email-inbox.html">/email-inbox.html</a></td>
-                              <td class="text-right px-3">29</td>
-                              <td class="text-right">8m:5s</td>
-                            </tr>
                           </tbody>
                         </table>
-                      </div>
+                          </div>
                       <div class="card-footer bg-white py-4">
                         <a href="#" class="text-uppercase">Audience Overview</a>
                       </div>
-                    </div>
-                  </div>
+                      </div>
+                      <!-- Users -->
+                <div class="card card-default">
+                          <div class="card-header">
+                            <h2>Sensor History</h2>
+                          </div>
+                          <div class="card-body">
+                            <div class="bg-primary d-flex justify-content-between flex-wrap p-5 text-white align-items-lg-end">
+                              <div class="d-flex flex-column">
+                                <span class="h3 text-white">325,980</span>
+                                <span>vs 275,900 (prev)</span>
+                              </div>
+                              <div>
+                                <span>45%</span>
+                                <i class="mdi mdi-arrow-up-bold"></i>
+                              </div>
+                            </div>
+                             <div id="line-chart-1"></div>
+                          </div>
                 </div>
-            <div class="row-end">
-                    <div class="col"></div>
-                      <div class="tab-content" id="myTabContent">
-                        <div id="barchartlg1"></div>
-                      </div>
-                      <div class="card-footer d-flex flex-wrap bg-white">
-                        <a href="#" class="text-uppercase py-3">Acquisition Report</a>
-                      </div>
-                    </div>
+              
+        </div>
+       
         
-        
-        
-        
-        
-        
-        
+    
+              
+               
+
+                      
         
         
         
@@ -199,50 +228,13 @@
                 <!-- User Sess ions Bounce -->
                 <div class="row-start">
                   <div class="col-6">
-                        <!-- User -->
-                        <div class="card card-default">
-                          <div class="card-header">
-                            <h2>Users</h2>
-                          </div>
-                          <div class="card-body">
-                            <div class="bg-primary d-flex justify-content-between flex-wrap p-5 text-white align-items-lg-end">
-                              <div class="d-flex flex-column">
-                                <span class="h3 text-white">325,980</span>
-                                <span>vs 275,900 (prev)</span>
-                              </div>
-                              <div>
-                                <span>45%</span>
-                                <i class="mdi mdi-arrow-up-bold"></i>
-                              </div>
-                            </div>
-                            <div id="line-chart-1"></div>
-                          </div>
+                        
                         </div>
                   </div>
                 
                 <div class="col-6">
-                  <!-- Bounce Rate -->
-                  <div class="card card-default">
-                    <div class="card-header">
-                      <h2>Bounce Rate</h2>
-                    </div>
-                    <div class="card-body">
-                      <div class="bg-danger d-flex justify-content-between flex-wrap p-5 text-white align-items-lg-end">
-                        <div class="d-flex flex-column">
-                          <span class="h3 text-white">67.0%</span>
-                          <span>vs 65.21% (prev)</span>
-                        </div>
-                        <div>
-                          <span>7%</span>
-                          <i class="mdi mdi-arrow-down-bold"></i>
-                        </div>
-                      </div>
-                      <div id="line-chart-3"></div>
-                    </div>
-                  </div>
-                </div>
-               
-
+                
+          </div>
                
               
 
@@ -273,6 +265,45 @@
       </div>
     </div>
     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     <!-- Card Offcanvas -->
                     <div class="card card-offcanvas" id="contact-off" >
                       <div class="card-header">
@@ -401,23 +432,7 @@
                     
                     <script src="plugins/daterangepicker/moment.min.js"></script>
                     <script src="plugins/daterangepicker/daterangepicker.js"></script>
-                    <script>
-                      jQuery(document).ready(function() {
-                        jQuery('input[name="dateRange"]').daterangepicker({
-                        autoUpdateInput: false,
-                        singleDatePicker: true,
-                        locale: {
-                          cancelLabel: 'Clear'
-                        }
-                      });
-                        jQuery('input[name="dateRange"]').on('apply.daterangepicker', function (ev, picker) {
-                          jQuery(this).val(picker.startDate.format('MM/DD/YYYY'));
-                        });
-                        jQuery('input[name="dateRange"]').on('cancel.daterangepicker', function (ev, picker) {
-                          jQuery(this).val('');
-                        });
-                      });
-                    </script>
+        
                     
                     
                     <script src="js/mono.js"></script>
@@ -425,11 +440,8 @@
                     <script src="js/map.js"></script>
                     <script src="js/custom.js"></script>
 
-                    
-
-
-                    <!--  -->
-
-
+<script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
   </body>
+
 </html>

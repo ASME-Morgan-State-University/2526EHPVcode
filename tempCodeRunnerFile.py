@@ -1,2 +1,1 @@
-
-        motor_sensors(),
+# Flask setup

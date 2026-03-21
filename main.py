@@ -33,27 +33,31 @@ Lat = Lon = Sc = 0
 
 def get_sensor_data():
     return {
-        "latitude": Lat,
-        "longitude": Lon,
-        "satellites": Sc,
-        "auxVoltage": Auxvoltage,
-        "auxCurrent": Auxcurrent,
-        "motorVoltage": Motorvoltage,
-        "motorCurrent": Motorcurrent,
-        "xAccel": xaccel,
-        "yAccel": yaccel,
-        "zAccel": zaccel,
-        "pitch": P,
-        "roll": R,
-        "yaw": Y,
-        "temperature": temp,
-        "humidity": Hum
+"Lat": Lat,
+        "Lon": Lon,
+        "Sc": Sc,
+        "Auxvoltage": Auxvoltage,
+        "Auxcurrent": Auxcurrent,
+        "Motorvoltage": Motorvoltage,
+        "Motorcurrent": Motorcurrent,
+        "xaccel": xaccel,
+        "yaccel": yaccel,
+        "zaccel": zaccel,
+        "xmag": xmag,
+        "ymag": ymag,
+        "zmag": zmag,
+        "P": P,
+        "R": R,
+        "Y": Y,
+        "temp": temp,
+        "Hum": Hum
     }
+    
 
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+  return render_template("index.html")
 
 @socketio.on("connect")
 def handle_connect():
