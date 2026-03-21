@@ -1698,77 +1698,179 @@ if (statusSmBarChart3 !== null) {
 }
 
 /*======== 10.1 LINE CHART 01 ========*/
-var lineChart1 = document.querySelector("#line-chart-1");
-if (lineChart1 !== null) {
-  var lineChartOption1 = {
-    chart: {
-      height: 350,
-      type: "line",
-      toolbar: {
-        show: false,
-      },
-    },
-    stroke: {
-      width: [2, 3],
-      curve: "smooth",
-      dashArray: [0, 5],
-    },
-    plotOptions: {
-      horizontal: false,
-    },
-    colors: ["#9e6de0", "#fec400"],
-    series: [
-      {
-        data: [6, 10, 8, 20, 15, 6, 21],
-      },
-      {
-        data: [8, 6, 15, 10, 25, 8, 32],
-      },
-    ],
-    labels: [
-      "04 jan",
-      "05 jan",
-      "06 jan",
-      "07 jan",
-      "08 jan",
-      "09 jan",
-      "10 jan",
-    ],
-    markers: {
-      size: [5, 0],
-    },
-    xaxis: {
-      axisBorder: {
-        show: false,
-      },
-      axisTicks: {
-        show: false,
-      },
-    },
-    tooltip: {
-      theme: "dark",
-      fixed: {
-        enabled: false,
-      },
-      x: {
-        show: false,
-      },
-      y: {
-        title: {
-          formatter: (labels) => labels,
-        },
-      },
-      marker: {
-        show: true,
-      },
-    },
-    legend: {
-      show: false,
-    },
+"use strict";
+
+document.addEventListener("DOMContentLoaded", function () {
+  // ================= GLOBAL STORAGE =================
+  window.sensorHistory = {
+    gps: { lat: [], lon: [], labels: [] },
+    temp: { data: [], labels: [] },
+    hum: { data: [], labels: [] },
+    accel: { x: [], y: [], z: [], labels: [] },
+    mag: { x: [], y: [], z: [], labels: [] },
+    imu: { pitch: [], roll: [], yaw: [], labels: [] },
+    voltage: { motor: [], aux: [], labels: [] },
+    current: { motor: [], aux: [], labels: [] }
   };
-  var randerLineChart1 = new ApexCharts(lineChart1, lineChartOption1);
-  randerLineChart1.render();
-}
+
+  const MAX_POINTS = 200; // max history points
+
+  // ================= GPS CHART =================
+  const gpsCtx = document.getElementById("gps-chart");
+  if (gpsCtx) {
+    window.gpsChart = new Chart(gpsCtx, {
+      type: "line",
+      data: {
+        labels: window.sensorHistory.gps.labels,
+        datasets: [
+          {
+            label: "Latitude",
+            data: window.sensorHistory.gps.lat,
+            borderColor: "blue",
+            tension: 0.3
+          },
+          {
+            label: "Longitude",
+            data: window.sensorHistory.gps.lon,
+            borderColor: "green",
+            tension: 0.3
+          }
+        ]
+      },
+      options: { animation: false, responsive: true }
+    });
+  }
+
+  // ================= TEMP/HUMIDITY CHART =================
+  const envCtx = document.getElementById("env-chart");
+  if (envCtx) {
+    window.envChart = new Chart(envCtx, {
+      type: "line",
+      data: {
+        labels: window.sensorHistory.temp.labels,
+        datasets: [
+          { label: "Temp (°C)", data: window.sensorHistory.temp.data, borderColor: "red", tension: 0.3 },
+          { label: "Humidity (%)", data: window.sensorHistory.hum.data, borderColor: "orange", tension: 0.3 }
+        ]
+      },
+      options: { animation: false, responsive: true }
+    });
+  }
+
+  // ================= ACCEL/MAG CHART =================
+  const imuCtx = document.getElementById("imu-chart");
+  if (imuCtx) {
+    window.imuChart = new Chart(imuCtx, {
+      type: "line",
+      data: {
+        labels: window.sensorHistory.accel.labels,
+        datasets: [
+          { label: "X Accel", data: window.sensorHistory.accel.x, borderColor: "blue", tension: 0.3 },
+          { label: "Y Accel", data: window.sensorHistory.accel.y, borderColor: "green", tension: 0.3 },
+          { label: "Z Accel", data: window.sensorHistory.accel.z, borderColor: "purple", tension: 0.3 },
+          { label: "X Mag", data: window.sensorHistory.mag.x, borderColor: "cyan", tension: 0.3 },
+          { label: "Y Mag", data: window.sensorHistory.mag.y, borderColor: "yellow", tension: 0.3 },
+          { label: "Z Mag", data: window.sensorHistory.mag.z, borderColor: "magenta", tension: 0.3 }
+        ]
+      },
+      options: { animation: false, responsive: true }
+    });
+  }
+
+  // ================= IMU CHART =================
+  const pitchCtx = document.getElementById("pitch-chart");
+  if (pitchCtx) {
+    window.pitchChart = new Chart(pitchCtx, {
+      type: "line",
+      data: {
+        labels: window.sensorHistory.imu.labels,
+        datasets: [
+          { label: "Pitch", data: window.sensorHistory.imu.pitch, borderColor: "red", tension: 0.3 },
+          { label: "Roll", data: window.sensorHistory.imu.roll, borderColor: "green", tension: 0.3 },
+          { label: "Yaw", data: window.sensorHistory.imu.yaw, borderColor: "blue", tension: 0.3 }
+        ]
+      },
+      options: { animation: false, responsive: true }
+    });
+  }
+
+  // ================= VOLTAGE/CURRENT CHART =================
+  const powerCtx = document.getElementById("power-chart");
+  if (powerCtx) {
+    window.powerChart = new Chart(powerCtx, {
+      type: "line",
+      data: {
+        labels: window.sensorHistory.voltage.labels,
+        datasets: [
+          { label: "Motor Voltage", data: window.sensorHistory.voltage.motor, borderColor: "red", tension: 0.3 },
+          { label: "Aux Voltage", data: window.sensorHistory.voltage.aux, borderColor: "orange", tension: 0.3 },
+          { label: "Motor Current", data: window.sensorHistory.current.motor, borderColor: "green", tension: 0.3 },
+          { label: "Aux Current", data: window.sensorHistory.current.aux, borderColor: "blue", tension: 0.3 }
+        ]
+      },
+      options: { animation: false, responsive: true }
+    });
+  }
+
+  // ================= HELPER FUNCTION =================
+  window.updateSensorHistory = function (msg) {
+    const now = new Date().toLocaleTimeString();
+
+    // GPS
+    window.sensorHistory.gps.lat.push(Number(msg.Lat));
+    window.sensorHistory.gps.lon.push(Number(msg.Lon));
+    window.sensorHistory.gps.labels.push(now);
+
+    // Temp/Hum
+    window.sensorHistory.temp.data.push(Number(msg.temp));
+    window.sensorHistory.temp.labels.push(now);
+    window.sensorHistory.hum.data.push(Number(msg.Hum));
+
+    // Accel/Mag
+    window.sensorHistory.accel.x.push(Number(msg.xaccel));
+    window.sensorHistory.accel.y.push(Number(msg.yaccel));
+    window.sensorHistory.accel.z.push(Number(msg.zaccel));
+
+    window.sensorHistory.mag.x.push(Number(msg.xmag));
+    window.sensorHistory.mag.y.push(Number(msg.ymag));
+    window.sensorHistory.mag.z.push(Number(msg.zmag));
+
+    window.sensorHistory.accel.labels.push(now);
+    window.sensorHistory.mag.labels.push(now);
+
+    // IMU
+    window.sensorHistory.imu.pitch.push(Number(msg.P));
+    window.sensorHistory.imu.roll.push(Number(msg.R));
+    window.sensorHistory.imu.yaw.push(Number(msg.Y));
+    window.sensorHistory.imu.labels.push(now);
+
+    // Voltage/Current
+    window.sensorHistory.voltage.motor.push(Number(msg.Motorvoltage));
+    window.sensorHistory.voltage.aux.push(Number(msg.Auxvoltage));
+    window.sensorHistory.current.motor.push(Number(msg.Motorcurrent));
+    window.sensorHistory.current.aux.push(Number(msg.Auxcurrent));
+    window.sensorHistory.voltage.labels.push(now);
+
+    // Limit history
+    const categories = Object.keys(window.sensorHistory);
+    categories.forEach((cat) => {
+      const subcats = window.sensorHistory[cat];
+      Object.keys(subcats).forEach((k) => {
+        if (Array.isArray(subcats[k]) && subcats[k].length > MAX_POINTS) {
+          subcats[k].shift();
+        }
+      });
+    });
+
+    // Update charts
+    if (window.gpsChart) window.gpsChart.update();
+    if (window.envChart) window.envChart.update();
+    if (window.imuChart) window.imuChart.update();
+    if (window.pitchChart) window.pitchChart.update();
+    if (window.powerChart) window.powerChart.update();
+  };
+});
+
 
 /*======== 10.2 LINE CHART 02 ========*/
 var lineChart2 = document.querySelector("#line-chart-2");
