@@ -9,6 +9,12 @@ const sensorKeys = [
   "Xmag","Ymag","Zmag","Pitch","Roll","Yaw","Temp","Hum"
 ];
 
+// ⭐ Limit to 10 seconds
+const MAX_POINTS = 20;
+
+// ⭐ Define high/low thresholds (based on backend list positions)
+const HIGH_POSITIONS = [0, 1, 2];  // example: positions 0-2 are high
+
 document.addEventListener("DOMContentLoaded", () => {
 
   // ===== APEXCHART =====
@@ -22,7 +28,8 @@ document.addEventListener("DOMContentLoaded", () => {
     },
     series: series,
     xaxis: { categories: [] },
-    legend: { position: "bottom" }
+    legend: { position: "bottom" },
+    stroke: { curve: 'stepline' } // Makes high/low steps visible like voltage/current
   };
 
   sensorHistoryChart = new ApexCharts(
@@ -32,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   sensorHistoryChart.render();
 
-  // ===== SOCKET =====
+  // ===== SOCKET.IO =====
   const socket = io();
 
   socket.on("telemetry", (msg) => {
@@ -49,48 +56,43 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("Temp").textContent = msg.temp;
     document.getElementById("Hum").textContent = msg.Hum;
 
-    // ===== MAP DATA =====
-    const data = {
-      latitude: msg.Lat,
-      longitude: msg.Lon,
-      Satellitecount: msg.Sc,
-      Auxvoltage: msg.Auxvoltage,
-      Auxcurrent: msg.Auxcurrent,
-      Motorvoltage: msg.Motorvoltage,
-      Motorcurrent: msg.Motorcurrent,
-      Xaccel: msg.xaccel,
-      Yaccel: msg.yaccel,
-      Zaccel: msg.zaccel,
-      Xmag: msg.xmag,
-      Ymag: msg.ymag,
-      Zmag: msg.zmag,
-      Pitch: msg.P,
-      Roll: msg.R,
-      Yaw: msg.Y,
-      Temp: msg.temp,
-      Hum: msg.Hum
-    };
+    // ===== MAP DATA & CONVERT TO HIGH/LOW =====
+    const rawData = [
+      msg.Lat, msg.Lon, msg.Sc, msg.Auxvoltage, msg.Auxcurrent,
+      msg.Motorvoltage, msg.Motorcurrent, msg.xaccel, msg.yaccel, msg.zaccel,
+      msg.xmag, msg.ymag, msg.zmag, msg.P, msg.R, msg.Y, msg.temp, msg.Hum
+    ];
 
-    updateSensorHistory(data);
-    updateCharts(data);
+    const data = sensorKeys.map((key, i) => {
+      return HIGH_POSITIONS.includes(i) ? 1 : 0; // 1 = High, 0 = Low
+    });
+
+    // Convert to object for ApexCharts
+    const sensorData = {};
+    sensorKeys.forEach((key, i) => sensorData[key] = data[i]);
+
+    updateSensorHistory(sensorData);
+    updateCharts(msg); // keep raw voltage/current charts
   });
 
 });
 
 
-// ===== UPDATE APEXCHART =====
+// ===== UPDATE APEXCHART HIGH/LOW =====
 function updateSensorHistory(sensorData) {
   const chart = sensorHistoryChart;
   const time = new Date().toLocaleTimeString();
 
+  // Update X-axis
   let categories = chart.w.globals.labels.slice();
   categories.push(time);
-  if (categories.length > 50) categories.shift();
+  if (categories.length > MAX_POINTS) categories.shift();
 
+  // Update series with high/low
   let newSeries = sensorKeys.map((key, i) => {
     let d = chart.w.globals.series[i].slice();
     d.push(sensorData[key] || 0);
-    if (d.length > 50) d.shift();
+    if (d.length > MAX_POINTS) d.shift();
     return { name: key, data: d };
   });
 
@@ -99,9 +101,8 @@ function updateSensorHistory(sensorData) {
 }
 
 
-// ===== UPDATE CHART.JS =====
+// ===== UPDATE CHART.JS (POWER + VOLTAGE) =====
 function updateCharts(data) {
-
   const time = new Date().toLocaleTimeString();
 
   // Power chart
@@ -109,7 +110,7 @@ function updateCharts(data) {
     window.powerChart.data.labels.push(time);
     window.powerChart.data.datasets[0].data.push(data.Auxvoltage || 0);
 
-    if (window.powerChart.data.labels.length > 50) {
+    if (window.powerChart.data.labels.length > MAX_POINTS) {
       window.powerChart.data.labels.shift();
       window.powerChart.data.datasets[0].data.shift();
     }
@@ -123,7 +124,7 @@ function updateCharts(data) {
     window.voltageChart.data.datasets[0].data.push(data.Motorvoltage || 0);
     window.voltageChart.data.datasets[1].data.push(data.Motorcurrent || 0);
 
-    if (window.voltageChart.data.labels.length > 50) {
+    if (window.voltageChart.data.labels.length > MAX_POINTS) {
       window.voltageChart.data.labels.shift();
       window.voltageChart.data.datasets.forEach(ds => ds.data.shift());
     }
