@@ -1,384 +1,137 @@
 <!DOCTYPE html>
-
-<!--
- // WEBSITE: https://themefisher.com
- // TWITTER: https://twitter.com/themefisher
- // FACEBOOK: https://www.facebook.com/themefisher
- // GITHUB: https://github.com/themefisher/
--->
-
-<html lang="en" dir="ltr">
+  <html lang="en" dir="ltr">
   <head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mono - Responsive Admin & Dashboard Template</title>
 
-  <title>Mono - Responsive Admin & Dashboard Template</title>
+    <!-- GOOGLE FONTS -->
+    <link href="https://fonts.googleapis.com/css?family=Karla:400,700|Roboto" rel="stylesheet">
+    <link href="plugins/material/css/materialdesignicons.min.css" rel="stylesheet" />
+    <link href="plugins/simplebar/simplebar.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/nprogress/nprogress.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/jvectormap/jquery-jvectormap-2.0.3.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/daterangepicker/daterangepicker.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="images/favicon.png" rel="shortcut icon" />
+  
+    <script src="plugins/nprogress/nprogress.js"></script>
+  </head>
 
-  <!-- GOOGLE FONTS -->
-  <link href="https://fonts.googleapis.com/css?family=Karla:400,700|Roboto" rel="stylesheet">
-  <link href="plugins/material/css/materialdesignicons.min.css" rel="stylesheet" />
-  <link href="plugins/simplebar/simplebar.css" rel="stylesheet" />
-
-  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/material/css/materialdesignicons.min.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/simplebar/simplebar.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/nprogress/nprogress.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/jvectormap/jquery-jvectormap-2.0.3.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='plugins/daterangepicker/daterangepicker.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-
-
-  <!-- FAVICON -->
-  <link href="images/favicon.png" rel="shortcut icon" />
-
-  <!--
-    HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries
-  -->
-  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-  <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-  <![endif]-->
-  <script src="plugins/nprogress/nprogress.js"></script>
-</head>
-
-
-  <body class="navbar-fixed sidebar-fixed" id="body">
-    <script>
-      NProgress.configure({ showSpinner: false });
-      NProgress.start();
-    </script>
-
-    
-
-    <!-- ====================================
-    ——— WRAPPER
-    ===================================== -->
-    <div class="wrapper">
-<!-- Section of table and fisrt graph -->
-      <div class="row align-items-start">
-         <div class="col-md-6">
-                      <!-- Acquisition Report -->
-                      <div class="card card-default" id="acquisition-report">
-                        <div class="card-header">
-                          <h2>Power Average</h2>
-                        </div>
-                       <div class="col"></div>
-                      <div class="tab-content" id="myTabContent">
-                        <div id="barchartlg1"></div>
+    <body>
+      <div class="navbar-fixed sidebar-fixed" id="body">
+          <div class="container-fluid">
+              <div class="row">
+                <!-- LEFT COLUMN -->
+                  <div class="col-md-6">
+                    <!-- Power Average -->
+                    <div class="card card-default" id="acquisition-report">
+                      <div class="card-header"><h2>Power Average</h2></div>
                         <div class="card-body">
-                          <canvas id="power-average-chart" height="200"></canvas>
+                        <canvas id="power-average-chart"></canvas>
                         </div>
-                       </div>
-                      
                       </div>
-
-
-
-                         <div class="card card-default">
-                    <div class="card-header">
-                      <h2>Voltage/Current history</h2>
-                   </div>
-                  <div class="card-body">
-                    <canvas id="power-chart" height="200"></canvas>
+                    </div>
                   </div>
+                  <div class="col-md-6">
+                      <!-- Sensor Values Table --> 
+                    <div class="card card-default" id="page-views">
+                      <div class="card-header"><h2>Sensor Values</h2></div>
+                      <div class="card-body py-0" data-simplebar>
+                        <table class="table table-borderless table-thead-border sensor-table">
+                          <thead>
+                              <tr>
+                              <th>Sensor</th>
+                              <th class="text-right px-2">Value 1</th>
+                              <th class="text-right">Value 2</th>
+                              <th class="text-right">Value 3</th>
+                            </tr>
+                          </thead>
+                              <tbody>
+                                <tr>
+                                  <td class="text-primary">Sensor1</td>
+                                  <td class="text-right"><span id="latitude">---</span>°</td>
+                                  <td class="text-right"><span id="longitude">---</span>°</td>
+                                  <td class="text-right"><span id="Satellitecount">---</span>°</td>
+                                  </tr>
+                                <tr>
+                                <td class="text-primary">Sensor2</td>
+                                <td class="text-right"><span id="Auxvoltage">---</span>V</td>
+                                <td class="text-right"><span id="Auxcurrent">---</span>A</td>
+                                <td class="text-right"></td>
+                                </tr>
+                                <tr>
+                                  <td class="text-primary">Sensor3</td>
+                                  <td class="text-right"><span id="Motorvoltage">---</span>V</td>
+                                  <td class="text-right"><span id="Motorcurrent">---</span>A</td>
+                                  <td class="text-right"></td>
+                                </tr>
+                                <tr>
+                                  <td class="text-primary">Sensor4</td>
+                                  <td class="text-right"><span id="Xaccel">---</span> m/s²</td>
+                                  <td class="text-right"><span id="Yaccel">---</span> m/s²</td>
+                                  <td class="text-right"><span id="Zaccel">---</span> m/s²</td>
+                                </tr>
+                                <tr>
+                                  <td class="text-primary">Sensor4-1</td>
+                                  <td class="text-right"><span id="Xmag">---</span> G</td>
+                                  <td class="text-right"><span id="Ymag">---</span> G</td>
+                                  <td class="text-right"><span id="Zmag">---</span> G</td>
+                                </tr>
+                                <tr>
+                                  <td class="text-primary">Sensor4-2</td>
+                                  <td class="text-right"><span id="Pitch">---</span>°</td>
+                                  <td class="text-right"><span id="Roll">---</span>°</td>
+                                  <td class="text-right"><span id="Yaw">---</span>°</td>
+                                </tr>
+                                <tr>
+                                  <td class="text-primary">Sensor5</td>
+                                  <td class="text-right"><span id="Temp">---</span>°C</td>
+                                  <td class="text-right"><span id="Hum">---</span>°C</td>
+                                  <td class="text-right"></td>
+                                </tr>
+                              </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    <div class="card-footer bg-white py-4">
+                      <a href="#" class="text-uppercase">Audience Overview</a>
+                    </div>
+                  </div>
+              </div>
+              <div class="row mt-2">
+                <div class="col-md-5">
+                  <!-- Sensor History Graph -->
+                  <div class="card card-default" id="voltage-history-card">
+                    <div class="card-header"><h2>Voltage/Current History</h2></div>
+                      <div class="card-body">
+                        <canvas id="power-chart"></canvas>
+                      </div>
+                    </div>
+                  </div> 
+                </div>
+                <!-- End Right Column -->
+                <div = class="col-md-7">
+                    <div class="card card-default" id="sensor-history-card">
+                      <div class="card-header"><h2>Sensor History</h2></div>
+                      <div class="card-body">
+                        <canvas id="sensor-history-chart"></canvas>
+                      </div>
+                    </div>
                 </div>
               </div>
-         </div>
-        <div class="col-md-6">
-                     <!-- Page Views  -->
-                      <div class="card card-default" id="page-views">
-                        <div class="card-header">
-                          <h2>Sensor Values</h2>
-                        </div>
-                          <div class="card-body py-0" data-simplebar style="height: 392px;">
-                            <table class="table table-borderless table-thead-border">
-                          <thead>
-                            <tr>
-                              <th>Sensor</th>
-                              <th class="text-right px-2">value1</th>
-                              <th class="text-right">value2</th>
-                              <th class="text-right">value3</th>
-                            </tr>
-                            
-                          </thead>
-                          <tbody>
-                            <tr>
-                              <td class="text-primary"><a> Sensor1</a></td>
-                              <td class="text-right px-3"><span id = "latitude">-----</span>°
-                              <td class="text-right"><span id = "longitude">-----</span>°
-                              <td class="text-right"><span id = "Satellitecount">-----</span>°
-                            </tr>
-                            <tr>
-                             <td class="text-primary"><a> Sensor2</a></td>
-                              <td class="text-right px-3"><span id ="Auxvoltage">------</span>V
-                              <td class="text-right"><span id="Auxcurrent">-----</span>A
-                            </tr>
-                            <tr>
-                              <td class="text-primary"><a> Sensor3</a></td>
-                              <td class="text-right px-3"><span id = "Motorvoltage">-----</span>V
-                              <td class="text-right"><span id = "Motorcurrent">-----</span>A
-                            </tr>
-                            <tr>
-                              <td class="text-primary"><a> Sensor4</a></td>
-                              <td class="text-right px-3"><span id = "Xaccel">----</span>m/s^2
-                              <td class="text-right px-3"><span id = "Yaccel">----</span>m/s^2
-                              <td class="text-right px-3"><span id = "Zaccel">---</span>m/s^2
-                            </tr>
-                              <tr>
-                              <td class="text-primary"><a> Sensor4-1</a></td>
-                              <td class="text-right px-3"><span id = "Xmag">-----</span>G
-                              <td class="text-right px-3"><span id = "Ymag">-----</span>G
-                              <td class="text-right px-3"><span id = "Zmag">-----</span>G
-                            </tr>
-                              <tr>
-                              <td class="text-primary"><a> Sensor4-2</a></td>
-                              <td class="text-right px-3"><span id = "Pitch">-----</span>°
-                              <td class="text-right px-3"><span id = "Roll">-----</span>°
-                              <td class="text-right px-3"><span id = "Yaw">----</span>°
-                            </tr>
-                            <tr>
-                              <td class="text-primary"><a> Sensor5</a></td>
-                              <td class="text-right px-3"><span id = "Temp">---</span>°C
-                              <td class="text-right"><span id = "Hum">---</span>°C
-                            </tr>
-                            <tr>
-                          </tbody>
-                        </table>
-                          </div>
-                      <div class="card-footer bg-white py-4">
-                        <a href="#" class="text-uppercase">Audience Overview</a>
-                      </div>
-                      </div>
-                      <!-- Users -->
-                  <div class="card card-default">
-                          <div class="card-header">
-                            <h2>Sensor History</h2>
-                         </div>
-                         <div class="card-body">
-                            <canvas id="gps-chart" height="200"></canvas>
-                            <canvas id="env-chart" height="200" class="mt-3"></canvas>
-                            <canvas id="imu-chart" height="200" class="mt-3"></canvas>
-                            <canvas id="pitch-chart" height="200" class="mt-3"></canvas>
-                         </div>
-                       </div>
-                    </div>
-                  </div>
-        
-    
-              
-               
-
-                      
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-    
-               
-              
-
-    
-        
-                    
-
-
-          
-            
-
-                
-        
-          <!-- Footer -->
-          <footer class="footer mt-auto">
-            <div class="copyright bg-white">
-              <p>
-                &copy; <span id="copy-year"></span> Copyright Mono Dashboard Bootstrap Template by <a class="text-primary" href="http://www.iamabdus.com/" target="_blank" >Abdus</a>.
-              </p>
-            </div>
-            <script>
-                var d = new Date();
-                var year = d.getFullYear();
-                document.getElementById("copy-year").innerHTML = year;
-            </script>
-          </footer>
-
+          </div>
       </div>
-    </div>
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    <!-- Card Offcanvas -->
-                    <div class="card card-offcanvas" id="contact-off" >
-                      <div class="card-header">
-                        <h2>Contacts</h2>
-                        <a href="#" class="btn btn-primary btn-pill px-4">Add New</a>
-                      </div>
-                      <div class="card-body">
-
-                        <div class="mb-4">
-                          <input type="text" class="form-control form-control-lg form-control-secondary rounded-0" placeholder="Search contacts...">
-                        </div>
-
-                        <div class="media media-sm">
-                          <div class="media-sm-wrapper">
-                            <a href="user-profile.html">
-                              <img src="images/user/user-sm-01.jpg" alt="User Image">
-                              <span class="active bg-primary"></span>
-                            </a>
-                          </div>
-                          <div class="media-body">
-                            <a href="user-profile.html">
-                              <span class="title">Selena Wagner</span>
-                              <span class="discribe">Designer</span>
-                            </a>
-                          </div>
-                        </div>
-
-                        <div class="media media-sm">
-                          <div class="media-sm-wrapper">
-                            <a href="user-profile.html">
-                              <img src="images/user/user-sm-02.jpg" alt="User Image">
-                              <span class="active bg-primary"></span>
-                            </a>
-                          </div>
-                          <div class="media-body">
-                            <a href="user-profile.html">
-                              <span class="title">Walter Reuter</span>
-                              <span>Developer</span>
-                            </a>
-                          </div>
-                        </div>
-
-                        <div class="media media-sm">
-                          <div class="media-sm-wrapper">
-                            <a href="user-profile.html">
-                              <img src="images/user/user-sm-03.jpg" alt="User Image">
-                            </a>
-                          </div>
-                          <div class="media-body">
-                            <a href="user-profile.html">
-                              <span class="title">Larissa Gebhardt</span>
-                              <span>Cyber Punk</span>
-                            </a>
-                          </div>
-                        </div>
-
-                        <div class="media media-sm">
-                          <div class="media-sm-wrapper">
-                            <a href="user-profile.html">
-                              <img src="images/user/user-sm-04.jpg" alt="User Image">
-                            </a>
-
-                          </div>
-                          <div class="media-body">
-                            <a href="user-profile.html">
-                              <span class="title">Albrecht Straub</span>
-                              <span>Photographer</span>
-                            </a>
-                          </div>
-                        </div>
-
-                        <div class="media media-sm">
-                          <div class="media-sm-wrapper">
-                            <a href="user-profile.html">
-                              <img src="images/user/user-sm-05.jpg" alt="User Image">
-                              <span class="active bg-danger"></span>
-                            </a>
-                          </div>
-                          <div class="media-body">
-                            <a href="user-profile.html">
-                              <span class="title">Leopold Ebert</span>
-                              <span>Fashion Designer</span>
-                            </a>
-                          </div>
-                        </div>
-
-                        <div class="media media-sm">
-                          <div class="media-sm-wrapper">
-                            <a href="user-profile.html">
-                              <img src="images/user/user-sm-06.jpg" alt="User Image">
-                              <span class="active bg-primary"></span>
-                            </a>
-                          </div>
-                          <div class="media-body">
-                            <a href="user-profile.html">
-                              <span class="title">Selena Wagner</span>
-                              <span>Photographer</span>
-                            </a>
-                          </div>
-                        </div>
-
-                      </div>
-                    </div>
-
-
-
-<!-- JS (FIXED FOR FLASK) -->
-  <script src="{{ url_for('static', filename='plugins/jquery/jquery.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='plugins/simplebar/simplebar.min.js') }}"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/chart.js') }}"></script>
-  </body>
-
+      <!-- JS -->
+      <script src="{{ url_for('static', filename='plugins/jquery/jquery.min.js') }}"></script>
+      <script src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+      <script src="{{ url_for('static', filename='plugins/simplebar/simplebar.min.js') }}"></script>
+      <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+      <script src="{{ url_for('static', filename='js/chart.js') }}"></script>
+      <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+      
+    </body>
 </html>

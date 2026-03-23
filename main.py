@@ -57,7 +57,7 @@ def get_sensor_data():
 
 @app.route("/")
 def index():
-  return render_template("index.html")
+ return render_template("index.html")
 
 @socketio.on("connect")
 def handle_connect():

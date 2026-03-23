@@ -16967,20 +16967,20 @@ input[type=radio] {
 
 .icons {
   -moz-column-count: 1;
-       column-count: 1;
+      column-count: 1;
   -moz-column-gap: 20px;
-       column-gap: 20px;
+      column-gap: 20px;
 }
 @media (min-width: 992px) {
   .icons {
     -moz-column-count: 2;
-         column-count: 2;
+      column-count: 2;
   }
 }
 @media (min-width: 1200px) {
   .icons {
     -moz-column-count: 3;
-         column-count: 3;
+        column-count: 3;
   }
 }
 .icons div {
@@ -17448,3 +17448,37 @@ html[dir=rtl] .sidebar li > a .caret:before {
   font-weight: 500;
 }
 /*# sourceMappingURL=style.css.map */
+<style>
+    /* Make all cards scrollable */
+    .card-body {
+      height: 230px;
+      overflow-y: auto;
+    }
+
+    #acquisition-report .card-body {
+      height: 230px;
+      overflow-y: auto;
+    }
+
+    #page-views .card-body {
+      height: 230px;
+      overflow-y: auto;
+    }
+
+    #voltage-history-card .card-body {
+      height: 230px;
+      overflow-y: auto;
+    }
+
+    #sensor-history-card .card-body {
+      height: 400px;
+      overflow-y: auto;
+    }
+
+    #power-average-chart,
+    #power-chart,
+    #sensor-history-chart {
+      width: 100% !important;
+      height: 100% !important;
+    }
+  
