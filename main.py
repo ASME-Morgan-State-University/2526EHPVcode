@@ -33,7 +33,7 @@ Lat = Lon = Sc = 0
 
 def get_sensor_data():
     return {
-"Lat": Lat,
+        "Lat": Lat,
         "Lon": Lon,
         "Sc": Sc,
         "Auxvoltage": Auxvoltage,
@@ -57,7 +57,7 @@ def get_sensor_data():
 
 @app.route("/")
 def index():
- return render_template("index.html")
+    return render_template("index.html")
 
 @socketio.on("connect")
 def handle_connect():
@@ -94,33 +94,33 @@ async def imu_sensors():
         P, Y, R = await asyncio.to_thread(imu.getAttitude)
         xaccel, yaccel, zaccel = await asyncio.to_thread(imu.getPA)
         xmag, ymag, zmag = await asyncio.to_thread(imu.getMagnetometer)
-        await asyncio.sleep(0.5)
+        await asyncio.sleep(2)
         
 async def motor_sensors():
     global Motorvoltage, Motorcurrent
     while True:
         Motorvoltage = await asyncio.to_thread(Motor.getMV)
         Motorcurrent = await asyncio.to_thread(Motor.getMC)
-        await asyncio.sleep(0.5)
+        await asyncio.sleep(1)
         
 async def aux_sensors():
     global Auxvoltage, Auxcurrent
     while True:
         Auxvoltage = await asyncio.to_thread(auxreader.getAV)
         Auxcurrent = await asyncio.to_thread(auxreader.getAC)
-        await asyncio.sleep(0.5)
+        await asyncio.sleep(3)
         
 async def gps_sensors():
     global Lat, Lon, Sc
     while True:
         Lat, Lon, Sc = await asyncio.to_thread(gps.getGPS)
-        await asyncio.sleep(0.5)
+        await asyncio.sleep(0.2)
         
 async def broadcast_task():
     while True:
         data = get_sensor_data()
         socketio.emit("telemetry", data)  # OK from thread
-        await asyncio.sleep(0.5)
+        await asyncio.sleep(0.1)
 
 async def main():
     await asyncio.gather(

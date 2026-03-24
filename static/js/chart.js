@@ -1702,39 +1702,93 @@ if (statusSmBarChart3 !== null) {
 
 document.addEventListener("DOMContentLoaded", () => {
 
-  // POWER AVERAGE (BAR)
+  // ── POWER CHART (Motor + Aux combined W) ─────────────────────────────────
   const ctxPower = document.getElementById("power-average-chart").getContext("2d");
-
   window.powerChart = new Chart(ctxPower, {
     type: "bar",
     data: {
       labels: [],
       datasets: [{
-        label: "Power",
-        data: []
+        label: "Total Power (W)",       // Motor W + Aux W combined
+        data: [],
+        borderColor: "#007bff",
+        backgroundColor: "rgba(0,123,255,0.2)",
+        borderWidth: 1
       }]
     },
     options: {
       responsive: true,
-      animation: false
+      animation: false,
+      scales: { y: { beginAtZero: true, title: { display: true, text: "Watts" } } },
+      plugins: { legend: { position: "top" } }
     }
   });
 
-  // VOLTAGE / CURRENT (LINE)
+  // ── VOLTAGE / CURRENT CHART (Motor + Aux on same chart) ──────────────────
   const ctxVoltage = document.getElementById("power-chart").getContext("2d");
-
   window.voltageChart = new Chart(ctxVoltage, {
     type: "line",
     data: {
       labels: [],
       datasets: [
-        { label: "Voltage", data: [] },
-        { label: "Current", data: [] }
+        {
+          label: "Motor Voltage (V)",
+          data: [],
+          borderColor: "#28a745",
+          backgroundColor: "rgba(40,167,69,0.1)",
+          fill: true,
+          tension: 0.2,
+          yAxisID: "yV"
+        },
+        {
+          label: "Motor Current (A)",
+          data: [],
+          borderColor: "#dc3545",
+          backgroundColor: "rgba(220,53,69,0.1)",
+          fill: true,
+          tension: 0.2,
+          yAxisID: "yA"
+        },
+        {
+          label: "Aux Voltage (V)",
+          data: [],
+          borderColor: "#ffc107",
+          backgroundColor: "rgba(255,193,7,0.1)",
+          fill: true,
+          tension: 0.2,
+          yAxisID: "yV"
+        },
+        {
+          label: "Aux Current (A)",
+          data: [],
+          borderColor: "#6f42c1",
+          backgroundColor: "rgba(111,66,193,0.1)",
+          fill: true,
+          tension: 0.2,
+          yAxisID: "yA"
+        }
       ]
     },
     options: {
       responsive: true,
-      animation: false
+      animation: false,
+      // Two Y-axes so Voltage and Current don't squash each other
+      scales: {
+        yV: {
+          type: "linear",
+          position: "left",
+          title: { display: true, text: "Voltage (V)" },
+          beginAtZero: true
+        },
+        yA: {
+          type: "linear",
+          position: "right",
+          title: { display: true, text: "Current (A)" },
+          beginAtZero: true,
+          grid: { drawOnChartArea: false }   // prevents double grid lines
+        }
+      },
+      plugins: { legend: { position: "top" } }
     }
   });
 

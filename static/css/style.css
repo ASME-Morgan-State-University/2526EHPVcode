@@ -17449,35 +17449,19 @@ html[dir=rtl] .sidebar li > a .caret:before {
 }
 /*# sourceMappingURL=style.css.map */
     /* Make all cards scrollable */
-    .card-body {
-      height: 230px;
-      overflow-y: auto;
-    }
+#power-average-chart,
+#power-chart {
+  width: 100% !important;
+  height: 250px !important;
+}
 
-    #acquisition-report .card-body {
-      height: 230px;
-      overflow-y: auto;
-    }
+#sensor-history-chart {
+  width: 100% !important;
+  height: 300px !important;
+}
 
-    #page-views .card-body {
-      height: 230px;
-      overflow-y: auto;
-    }
-
-    #voltage-history-card .card-body {
-      height: 230px;
-      overflow-y: auto;
-    }
-
-    #sensor-history-card .card-body {
-      height: 400px;
-      overflow-y: auto;
-    }
-
-    #power-average-chart,
-    #power-chart,
-    #sensor-history-chart {
-      width: 100% !important;
-      height: 100% !important;
-    }
+#voltage-history-card .card-body,
+#sensor-history-card .card-body {
+  overflow-y: auto;
+}
   
