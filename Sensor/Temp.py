@@ -1,76 +1,76 @@
+#!/usr/bin/env python3
+# VVVV Install Theses VVVV
+# sudo apt install python3-smbus python3-pip i2c-tools
+# pip3 install smbus2
+"""
+AHT21 Temperature & Humidity Reader for Raspberry Pi
+Date: 2026-03-23
+"""
 
-
-
-
-
-import pigpio
 import time
-import random
+import smbus2
+import sys
 
-class AHT21:
-    _i2cAddr = 0x38
+# I2C address for AHT21
+AHT21_I2C_ADDR = 0x38
 
-    def __init__(self):
-        self.pi = pigpio.pi()
-        self.handle = self.pi.i2c_open(self._i2cAddr)
-        assert(self.handle)
+# Commands
+AHT21_CMD_INIT = [0xBE, 0x08, 0x00]
+AHT21_CMD_TRIGGER = [0xAC, 0x33, 0x00]
+AHT21_CMD_SOFTRESET = [0xBA]
 
-        self._calibrate()
-
-    def _write(self, data):
-        self.pi.i2c_write_device(self.handle, bytearray(data))
-
-    def _read(self, reg, len):
-        return self.pi.i2c_read_i2c_block_data(self.handle, reg, len)[1]
-
-    def _calibrate(self):
-        cal_cmd = [0xbe, 0x08, 0x00]
-        self._write(cal_cmd)
-        #todo delay perf counter?? need 50 us
-        time.sleep(0.01)
-        self._write([0x71]) # get status register
-        res = self._read(self._i2cAddr, 1)
-        if not res[0] & 0x68 == 0x08:
-            print("Error calibrating.")
-            return False
-        else:
-            print("Calibrating ok.")
-            return True
-
-    def Read(self):
-        """Returns tuple (temp, humidity). Blocking delay at readout. """
-        read_cmd = [0xac, 0x33, 0x00]
-        self._write(read_cmd)
-        #todo delay perf counter?? need 80ms 
-        time.sleep(0.1)
-
-        res = self._read(self._i2cAddr, 6)
-
-        calc_hum = ((res[1] << 16) | (res[2] << 8) | res[3]) >> 4;
-        calc_temp = ((res[3] & 0x0F) << 16) | (res[4] << 8) | res[5];
-
-        rh = calc_hum * 100 / 1048576;
-        temp = calc_temp * 200 / 1048576 - 50;
-
-        return (temp, rh)
-
-aht = AHT21()
-aht._calibrate()
-
-def getTemperature():
+def aht21_init(bus):
+    """Initialize the AHT21 sensor."""
     try:
-        return aht.Read()[0] # Celcius
+        bus.write_i2c_block_data(AHT21_I2C_ADDR, AHT21_CMD_INIT[0], AHT21_CMD_INIT[1:])
+        time.sleep(0.05)  # Wait for init
     except Exception as e:
-        print(f"Error getting temperature: {e}")
-        return 0
-    
-def getHumidity():
-    try:
-        return aht.Read(0)[1] #%
-    except Exception as e: 
-        print(f"Error getting temperature: {e}")
-        return 0
+        sys.exit(f"Error initializing AHT21: {e}")
 
-for i in range(50):
-	getTemperature()
-	getHumidity()
+def aht21_soft_reset(bus):
+    """Soft reset the AHT21 sensor."""
+    try:
+        bus.write_byte(AHT21_I2C_ADDR, AHT21_CMD_SOFTRESET[0])
+        time.sleep(0.02)
+    except Exception as e:
+        sys.exit(f"Error resetting AHT21: {e}")
+
+def aht21_read(bus):
+    """Read temperature and humidity from AHT21."""
+    try:
+        # Trigger measurement
+        bus.write_i2c_block_data(AHT21_I2C_ADDR, AHT21_CMD_TRIGGER[0], AHT21_CMD_TRIGGER[1:])
+        time.sleep(0.08)  # Wait for measurement
+
+        # Read 6 bytes of data
+        data = bus.read_i2c_block_data(AHT21_I2C_ADDR, 0x00, 6)
+
+        # Parse humidity (20 bits)
+        humidity_raw = ((data[1] << 12) | (data[2] << 4) | (data[3] >> 4))
+        humidity = (humidity_raw / 1048576.0) * 100
+
+        # Parse temperature (20 bits)
+        temp_raw = (((data[3] & 0x0F) << 16) | (data[4] << 8) | data[5])
+        temperature = ((temp_raw / 1048576.0) * 200) - 50
+
+        return round(temperature, 2), round(humidity, 2)
+
+    except Exception as e:
+        sys.exit(f"Error reading AHT21: {e}")
+
+def main():
+    try:
+        bus = smbus2.SMBus(1)  # I2C bus 1 on Raspberry Pi
+    except FileNotFoundError:
+        sys.exit("I2C bus not found. Enable I2C in raspi-config.")
+
+    aht21_soft_reset(bus)
+    aht21_init(bus)
+
+    while True:
+        temp, hum = aht21_read(bus)
+        print(f"Temperature: {temp} °C, Humidity: {hum} %")
+        time.sleep(2)
+
+if __name__ == "__main__":
+    main()
