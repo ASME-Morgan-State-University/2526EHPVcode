@@ -26,12 +26,7 @@
     <link href="images/favicon.png" rel="shortcut icon" />
   
     <script src="plugins/nprogress/nprogress.js"></script>
-    <style>
-    /*
-      Override Bootstrap's alert colours so they work inside a <td>
-      without adding padding/margin that breaks the table row height.
-      We only change text colour + a subtle left border as a visual cue.
-    */
+  <style>
     td.sensor-label {
       transition: color 0.3s, border-left 0.3s;
       border-left: 3px solid transparent;
@@ -39,12 +34,12 @@
       font-weight: 500;
     }
     td.sensor-label.alert-danger {
-      color: #dc3545 !important;   /* Bootstrap red */
+      color: #dc3545 !important;
       border-left-color: #dc3545;
       background-color: rgba(220, 53, 69, 0.08);
     }
     td.sensor-label.alert-warning {
-      color: #fd7e14 !important;   /* Bootstrap orange (warning is yellow by default — we use orange) */
+      color: #fd7e14 !important;
       border-left-color: #fd7e14;
       background-color: rgba(253, 126, 20, 0.08);
     }
@@ -77,12 +72,8 @@
                 <div class="col-md-6">
                   <!-- Acquisition / Power Average Card -->
                   <div class="card card-default" style="overflow-x: auto";>
-                    <div class="card-header">
-                      <h2>Power Average</h2>
-                    </div>
-                    <div class="card-body">
-                      <canvas id="power-average-chart"></canvas>
-                    </div>
+                    <div class="card-header"><h2>Power Average</h2></div>
+                    <div class="card-body"><canvas id="power-average-chart"></canvas></div>
                     <!-- Footer -->
                     <div class="card-footer d-flex flex-wrap bg-white">
                       <a href="#" class="text-uppercase py-3">Power Report</a>
