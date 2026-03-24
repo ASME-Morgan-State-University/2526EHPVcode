@@ -1702,29 +1702,110 @@ if (statusSmBarChart3 !== null) {
 
 document.addEventListener("DOMContentLoaded", () => {
 
-  // ── POWER CHART (Motor + Aux combined W) ─────────────────────────────────
+  // ── SHARED TOOLTIP PLUGIN (handles both mouse and touch) ──────────────────
+  // Chart.js doesn't activate tooltips on touchstart by default.
+  // This plugin intercepts touch events and manually triggers the tooltip
+  // at the nearest data point to where the user touched.
+  const touchTooltipPlugin = {
+    id: "touchTooltip",
+    afterInit(chart) {
+      const canvas = chart.canvas;
+
+      canvas.addEventListener("touchstart", (e) => {
+        e.preventDefault();           // prevent scroll hijack while touching chart
+        handleTouch(chart, e);
+      }, { passive: false });
+
+      canvas.addEventListener("touchmove", (e) => {
+        e.preventDefault();           // keep tooltip tracking as finger moves
+        handleTouch(chart, e);
+      }, { passive: false });
+
+      canvas.addEventListener("touchend", () => {
+        // Keep tooltip visible for 2 seconds after finger lifts
+        // so the user can read the value comfortably
+        setTimeout(() => {
+          chart.tooltip.setActiveElements([], { x: 0, y: 0 });
+          chart.update("none");       // "none" = no animation on clear
+        }, 2000);
+      });
+    }
+  };
+
+  function handleTouch(chart, e) {
+    const touch  = e.touches[0];
+    const rect   = chart.canvas.getBoundingClientRect();
+    const x      = touch.clientX - rect.left;
+    const y      = touch.clientY - rect.top;
+
+    // Find the nearest data point across ALL datasets at this x position
+    const points = [];
+    chart.data.datasets.forEach((_, datasetIndex) => {
+      const meta = chart.getDatasetMeta(datasetIndex);
+      meta.data.forEach((point, index) => {
+        // Only consider points within 40px horizontally of the touch
+        if (Math.abs(point.x - x) < 40) {
+          points.push({ datasetIndex, index });
+        }
+      });
+    });
+
+    if (points.length > 0) {
+      chart.tooltip.setActiveElements(points, { x, y });
+      chart.setDatasetVisibility(0, true);   // ensure datasets are visible
+      chart.update("none");
+    }
+  }
+
+  // ── POWER CHART ───────────────────────────────────────────────────────────
   const ctxPower = document.getElementById("power-average-chart").getContext("2d");
   window.powerChart = new Chart(ctxPower, {
     type: "bar",
     data: {
       labels: [],
-      datasets: [{
-        label: "Total Power (W)",       // Motor W + Aux W combined
-        data: [],
-        borderColor: "#007bff",
-        backgroundColor: "rgba(0,123,255,0.2)",
-        borderWidth: 1
-      }]
+      datasets: [
+        {
+          label: "Motor Power (W)",
+          data: [],
+          borderColor: "#007bff",
+          backgroundColor: "rgba(0,123,255,0.5)",
+          borderWidth: 1
+        },
+        {
+          label: "Aux Power (W)",
+          data: [],
+          borderColor: "#dc3545",
+          backgroundColor: "rgba(220,53,69,0.5)",
+          borderWidth: 1
+        }
+      ]
     },
     options: {
       responsive: true,
       animation: false,
-      scales: { y: { beginAtZero: true, title: { display: true, text: "Watts" } } },
-      plugins: { legend: { position: "top" } }
-    }
+      scales: {
+        y: { beginAtZero: true, title: { display: true, text: "Watts" } },
+        x: { stacked: false }
+      },
+      plugins: {
+        legend: { position: "top" },
+        tooltip: {
+          enabled: true,
+          mode: "index",            // show all datasets at the touched x position
+          intersect: false,         // don't require exact hit on the bar
+          callbacks: {
+            label: ctx =>
+              ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)} W`
+          }
+        }
+      }
+    },
+    // Bar chart doesn't need the touch plugin (bars are wide enough to tap)
+    // but we include it for consistency on small screens
+    plugins: [touchTooltipPlugin]
   });
 
-  // ── VOLTAGE / CURRENT CHART (Motor + Aux on same chart) ──────────────────
+  // ── VOLTAGE / CURRENT CHART ───────────────────────────────────────────────
   const ctxVoltage = document.getElementById("power-chart").getContext("2d");
   window.voltageChart = new Chart(ctxVoltage, {
     type: "line",
@@ -1738,7 +1819,9 @@ document.addEventListener("DOMContentLoaded", () => {
           backgroundColor: "rgba(40,167,69,0.1)",
           fill: true,
           tension: 0.2,
-          yAxisID: "yV"
+          yAxisID: "yV",
+          pointRadius: 4,           // visible points make touch targeting easier
+          pointHoverRadius: 8       // larger hit area on hover/touch
         },
         {
           label: "Motor Current (A)",
@@ -1747,7 +1830,9 @@ document.addEventListener("DOMContentLoaded", () => {
           backgroundColor: "rgba(220,53,69,0.1)",
           fill: true,
           tension: 0.2,
-          yAxisID: "yA"
+          yAxisID: "yA",
+          pointRadius: 4,
+          pointHoverRadius: 8
         },
         {
           label: "Aux Voltage (V)",
@@ -1756,7 +1841,9 @@ document.addEventListener("DOMContentLoaded", () => {
           backgroundColor: "rgba(255,193,7,0.1)",
           fill: true,
           tension: 0.2,
-          yAxisID: "yV"
+          yAxisID: "yV",
+          pointRadius: 4,
+          pointHoverRadius: 8
         },
         {
           label: "Aux Current (A)",
@@ -1765,14 +1852,22 @@ document.addEventListener("DOMContentLoaded", () => {
           backgroundColor: "rgba(111,66,193,0.1)",
           fill: true,
           tension: 0.2,
-          yAxisID: "yA"
+          yAxisID: "yA",
+          pointRadius: 4,
+          pointHoverRadius: 8
         }
       ]
     },
     options: {
       responsive: true,
       animation: false,
-      // Two Y-axes so Voltage and Current don't squash each other
+      interaction: {
+        // "index" mode snaps to the nearest x-axis label and shows
+        // ALL four dataset values at once in one tooltip
+        mode: "index",
+        intersect: false,           // fire even if finger isn't exactly on a point
+        axis: "x"                   // snap horizontally, ignore y distance
+      },
       scales: {
         yV: {
           type: "linear",
@@ -1785,11 +1880,30 @@ document.addEventListener("DOMContentLoaded", () => {
           position: "right",
           title: { display: true, text: "Current (A)" },
           beginAtZero: true,
-          grid: { drawOnChartArea: false }   // prevents double grid lines
+          grid: { drawOnChartArea: false }
         }
       },
-      plugins: { legend: { position: "top" } }
-    }
+      plugins: {
+        legend: { position: "top" },
+        tooltip: {
+          enabled: true,
+          mode: "index",
+          intersect: false,
+          // Show a crosshair line at the active x position
+          // so it's clear which time slice is selected
+          callbacks: {
+            title: items => ` ${items[0]?.label ?? ""}`,
+            label: ctx => {
+              // Pick the right unit suffix per dataset
+              const units = ["V", "A", "V", "A"];
+              const unit  = units[ctx.datasetIndex] ?? "";
+              return ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(3)} ${unit}`;
+            }
+          }
+        }
+      }
+    },
+    plugins: [touchTooltipPlugin]   // ← registers our touch handler on this chart
   });
 
 });

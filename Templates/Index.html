@@ -110,43 +110,43 @@
                           </thead>
                               <tbody>
                                 <tr>
-                                  <td class="text-primary">Sensor1[GPS]</td>
+                                  <td id="label-GPS" class="sensor-label">Sensor1[GPS]</td>
                                   <td class="text-right"><span id="Lat">---</span>°</td>
                                   <td class="text-right"><span id="Lon">---</span>°</td>
                                   <td class="text-right"><span id="Sc">---</span>°</td>
                                   </tr>
                                 <tr>
-                                <td class="text-primary">Sensor2[AUX battery]</td>
+                                <td id="label-Aux" class="sensor-label">Sensor2[AUX battery]</td>
                                 <td class="text-right"><span id="Auxvoltage">---</span>V</td>
                                 <td class="text-right"><span id="Auxcurrent">---</span>A</td>
                                 <td class="text-right"></td>
                                 </tr>
                                 <tr>
-                                  <td class="text-primary">Sensor3[Motor battery]</td>
+                                  <td  id="label-Motor" class="sensor-label">Sensor3[Motor battery]</td>
                                   <td class="text-right"><span id="Motorvoltage">---</span>V</td>
                                   <td class="text-right"><span id="Motorcurrent">---</span>A</td>
                                   <td class="text-right"></td>
                                 </tr>
                                 <tr>
-                                  <td class="text-primary">Sensor4[IMU_accelerometers]</td>
+                                  <td id="label-Accel" class="sensor-label">Sensor4[IMU_accelerometers]</td>
                                   <td class="text-right"><span id="xaccel">---</span> m/s²</td>
                                   <td class="text-right"><span id="yaccel">---</span> m/s²</td>
                                   <td class="text-right"><span id="zaccel">---</span> m/s²</td>
                                 </tr>
                                 <tr>
-                                  <td class="text-primary">Sensor4-1[IMU_magnetometers]</td>
+                                  <tdid="label-Mag" class="sensor-label">Sensor4-1[IMU_magnetometers]</td>
                                   <td class="text-right"><span id="xmag">---</span> G</td>
                                   <td class="text-right"><span id="ymag">---</span> G</td>
                                   <td class="text-right"><span id="zmag">---</span> G</td>
                                 </tr>
                                 <tr>
-                                  <td class="text-primary">Sensor4-2[IMU_gyroscopes]</td>
+                                  <td id="label-Gyro" class="sensor-label">Sensor4-2[IMU_gyroscopes]</td>
                                   <td class="text-right"><span id="P">---</span>°</td>
                                   <td class="text-right"><span id="R">---</span>°</td>
                                   <td class="text-right"><span id="Y">---</span>°</td>
                                 </tr>
                                 <tr>
-                                  <td class="text-primary">Sensor5[Temperature]</td>
+                                  <td id="label-Temp" class="sensor-label">Sensor5[Temperature]</td>
                                   <td class="text-right"><span id="temp">---</span>°C</td>
                                   <td class="text-right"><span id="Hum">---</span>%</td>
                                   <td class="text-right"></td>
@@ -167,14 +167,6 @@
                     <div class="card-header"><h2>Voltage/Current History</h2></div>
                     <div class="card-body">
                       <canvas id="power-chart"></canvas>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6"> 
-                  <div class="card card-default" style="overflow-x: auto;">
-                    <div class="card-header"><h2>Sensor History</h2></div>
-                    <div class="card-body">
-                      <div id="sensor-history-chart"></div>
                     </div>
                   </div>
                 </div>
