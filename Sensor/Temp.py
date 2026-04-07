@@ -53,7 +53,7 @@ def aht21_read(bus):
         temp_raw = (((data[3] & 0x0F) << 16) | (data[4] << 8) | data[5])
         temperature = ((temp_raw / 1048576.0) * 200) - 50
 
-        return round(temperature, 2), round(humidity, 2)
+        return round(temperature, 2), round(humidity, 4)
 
     except Exception as e:
         sys.exit(f"Error reading AHT21: {e}")
