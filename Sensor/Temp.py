@@ -35,8 +35,8 @@ def aht21_soft_reset(bus):
     except Exception as e:
         sys.exit(f"Error resetting AHT21: {e}")
 
-def aht21_read(bus):
-    """Read temperature and humidity from AHT21."""
+def getHumidity(bus):
+    """Read humidity from AHT21."""
     try:
         # Trigger measurement
         bus.write_i2c_block_data(AHT21_I2C_ADDR, AHT21_CMD_TRIGGER[0], AHT21_CMD_TRIGGER[1:])
@@ -49,11 +49,26 @@ def aht21_read(bus):
         humidity_raw = ((data[1] << 12) | (data[2] << 4) | (data[3] >> 4))
         humidity = (humidity_raw / 1048576.0) * 100
 
+        return round(humidity, 4)
+
+    except Exception as e:
+        sys.exit(f"Error reading AHT21: {e}")
+
+def getTemperature(bus):
+    """Read temperature from AHT21."""
+    try:
+        # Trigger measurement
+        bus.write_i2c_block_data(AHT21_I2C_ADDR, AHT21_CMD_TRIGGER[0], AHT21_CMD_TRIGGER[1:])
+        time.sleep(0.08)  # Wait for measurement
+
+        # Read 6 bytes of data
+        data = bus.read_i2c_block_data(AHT21_I2C_ADDR, 0x00, 6)
+
         # Parse temperature (20 bits)
         temp_raw = (((data[3] & 0x0F) << 16) | (data[4] << 8) | data[5])
         temperature = ((temp_raw / 1048576.0) * 200) - 50
 
-        return round(temperature, 2), round(humidity, 4)
+        return round(temperature, 2)
 
     except Exception as e:
         sys.exit(f"Error reading AHT21: {e}")
@@ -69,8 +84,9 @@ def main():
 
     try:
         while True:
-            temp, hum = aht21_read(bus)
-            print(f"Temperature: {temp} °C, Humidity: {hum} %")
+            temp = getTemperature(bus)
+            hum = getHumidity(bus)
+            print(f"{temp}  {hum}")
             time.sleep(2)
     except KeyboardInterrupt:
         print("\nExiting...")
