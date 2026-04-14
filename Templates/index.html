@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+
+<!--
+ // WEBSITE: https://themefisher.com
+ // TWITTER: https://twitter.com/themefisher
+ // FACEBOOK: https://www.facebook.com/themefisher
+ // GITHUB: https://github.com/themefisher/
+-->
+
+
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mono - Responsive Admin & Dashboard Template</title>
+
+    <!-- GOOGLE FONTS -->
+    <link href="https://fonts.googleapis.com/css?family=Karla:400,700|Roboto" rel="stylesheet">
+    <link href="plugins/material/css/materialdesignicons.min.css" rel="stylesheet" />
+    <link href="plugins/simplebar/simplebar.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/nprogress/nprogress.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/jvectormap/jquery-jvectormap-2.0.3.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='plugins/daterangepicker/daterangepicker.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="images/favicon.png" rel="shortcut icon" />
+  
+    <script src="plugins/nprogress/nprogress.js"></script>
+  <style>
+    td.sensor-label {
+      transition: color 0.3s, border-left 0.3s;
+      border-left: 3px solid transparent;
+      padding-left: 6px !important;
+      font-weight: 500;
+    }
+    td.sensor-label.alert-danger {
+      color: #dc3545 !important;
+      border-left-color: #dc3545;
+      background-color: rgba(220, 53, 69, 0.08);
+    }
+    td.sensor-label.alert-warning {
+      color: #fd7e14 !important;
+      border-left-color: #fd7e14;
+      background-color: rgba(253, 126, 20, 0.08);
+    }
+  </style>
+  </head>
+
+    <body class="navbar-fixed sidebar-fixed" id="body">
+                <div class="container-fluid">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <!-- Acquisition / Power Average Card -->
+                      <div class="card card-default" style="overflow-x: auto";>
+                        <div class="card-header"><h2>Power Average</h2></div>
+                        <div class="card-body"><canvas id="power-average-chart"></canvas></div>
+                        <!-- Footer -->
+                        <div class="card-footer d-flex flex-wrap bg-white">
+                          <a href="#" class="text-uppercase py-3">Power Report</a>
+                        </div>
+                      </div>
+                      <div class="card card-default mt-2" style="overflow-x:auto;">
+                        <div class="card-header"><h2>Voltage / Current History</h2></div>
+                        <div class="card-body">
+                          <canvas id="power-chart"></canvas>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                        <!-- Sensor Values Table --> 
+                      <div class="card card-default" id="page-views">
+                        <div class="card-header"><h2>Sensor Values</h2></div>
+                        <div class="card-body py-0"  style="overflow-x: auto;">
+                          <table class="table table-borderless table-thead-border sensor-table">
+                            <thead>
+                                <tr>
+                                  <th>Sensor</th>
+                                  <th class="text-right px-2">Value 1</th>
+                                  <th class="text-right">Value 2</th>
+                                  <th class="text-right">Value 3</th>
+                                </tr>
+                            </thead>
+                                <tbody>
+                                  <tr>
+                                    <td id="label-GPS" class="sensor-label">Sensor1[GPS]</td>
+                                    <td class="text-right"><span id="Lat">---</span>°</td>
+                                    <td class="text-right"><span id="Lon">---</span>°</td>
+                                    <td class="text-right"><span id="Sc">---</span>°</td>
+                                    </tr>
+                                  <tr>
+                                    <td id="label-Aux" class="sensor-label">Sensor2[AUX battery]</td>
+                                    <td class="text-right"><span id="Auxvoltage">---</span>V</td>
+                                    <td class="text-right"><span id="Auxcurrent">---</span>A</td>
+                                    <td class="text-right"></td>
+                                  </tr>
+                                  <tr>
+                                    <td  id="label-Motor" class="sensor-label">Sensor3[Motor battery]</td>
+                                    <td class="text-right"><span id="Motorvoltage">---</span>V</td>
+                                    <td class="text-right"><span id="Motorcurrent">---</span>A</td>
+                                    <td class="text-right"></td>
+                                  </tr>
+                                  <tr>
+                                    <td id="label-Accel" class="sensor-label">Sensor4[IMU_accelerometers]</td>
+                                    <td class="text-right"><span id="xaccel">---</span> m/s²</td>
+                                    <td class="text-right"><span id="yaccel">---</span> m/s²</td>
+                                    <td class="text-right"><span id="zaccel">---</span> m/s²</td>
+                                  </tr>
+                                  <tr>
+                                    <td id="label-Mag" class="sensor-label">Sensor4-1[IMU_magnetometers]</td>
+                                    <td class="text-right"><span id="xmag">---</span> G</td>
+                                    <td class="text-right"><span id="ymag">---</span> G</td>
+                                    <td class="text-right"><span id="zmag">---</span> G</td>
+                                  </tr>
+                                  <tr>
+                                    <td id="label-Gyro" class="sensor-label">Sensor4-2[IMU_gyroscopes]</td>
+                                    <td class="text-right"><span id="P">---</span>°</td>
+                                    <td class="text-right"><span id="R">---</span>°</td>
+                                    <td class="text-right"><span id="Y">---</span>°</td>
+                                  </tr>
+                                  <tr>
+                                    <td id="label-Temp" class="sensor-label">Sensor5[Temperature]</td>
+                                    <td class="text-right"><span id="temp">---</span>°C</td>
+                                    <td class="text-right"><span id="Hum">---</span>%</td>
+                                    <td class="text-right"></td>
+                                  </tr>
+                                </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+      <!-- JS -->
+      <script src="{{ url_for('static', filename='plugins/jquery/jquery.min.js') }}"></script>
+      <script src="{{ url_for('static', filename='plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+      <script src="{{ url_for('static', filename='plugins/simplebar/simplebar.min.js') }}"></script>
+      <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+      <script src="{{ url_for('static', filename='js/chart.js') }}"></script>
+      <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+      
+    </body>
+</html>
