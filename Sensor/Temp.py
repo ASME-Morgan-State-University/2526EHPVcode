@@ -67,14 +67,15 @@ def main():
     aht21_soft_reset(bus)
     aht21_init(bus)
 
-    while True:
-        temp, hum = aht21_read(bus)
-        print(f"Temperature: {temp} °C, Humidity: {hum} %")
-        time.sleep(2) 
-    except keyboardInterrupt:
-     print("\nExiting...")
-   finally :
-    bus.close()
+    try:
+        while True:
+            temp, hum = aht21_read(bus)
+            print(f"Temperature: {temp} °C, Humidity: {hum} %")
+            time.sleep(2)
+    except KeyboardInterrupt:
+        print("\nExiting...")
+    finally:
+        bus.close()
 
 if __name__ == "__main__":
     main()
