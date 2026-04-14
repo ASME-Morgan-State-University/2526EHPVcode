@@ -1,11 +1,49 @@
-import random
+
+"""
+This Raspberry Pi code was developed by newbiely.com
+This Raspberry Pi code is made available for public use without any restriction
+For comprehensive instructions and wiring diagrams, please visit:
+https://newbiely.com/tutorials/raspberry-pi/raspberry-pi-gps
+"""
+
+
+import serial
+import time
+
+GPS_BAUD = 9600
+# Create serial object for GPS
+GPS = serial.Serial('/dev/serial0', GPS_BAUD, timeout=1)
 def getGPS():
     try:
-        random_numbers = [float(random.randint(1, 100)) for _ in range(3)]
-        Lat = random_numbers[0]
-        Lon = random_numbers[1]
-        Sc = random_numbers[2]
-        return Lat, Lon, Sc
-    except Exception as e:
-        print(f"Error getting IMU data: {e}")
-        return 0
+        while True:
+            if GPS.in_waiting > 0:
+                gps_data = GPS.readline().decode('utf-8').strip()
+
+                if gps_data.startswith('$GPGGA'):
+                    # Process GPS data using TinyGPS++
+                    # You may need to adapt this part based on the structure of your GPS data
+                    print(f"Received GPS data: {gps_data}")
+
+                    # Extract relevant information
+                    data_parts = gps_data.split(',')
+                    latitude = data_parts[2]
+                    longitude = data_parts[4]
+                    altitude = data_parts[9]
+                    # Print extracted information
+                    print(f"- Latitude: {latitude}")
+                    print(f"- Longitude: {longitude}")
+                    print(f"- Altitude: {altitude} meters")
+                    return latitude,longitude,altitude
+                    # You can add more processing as needed
+            time.sleep(1)
+    except KeyboardInterrupt:
+        print("\nExiting the script.")
+        GPS.close()
+        result =getGPS()
+    if result: 
+        latitude,longitude,altitude = result
+    
+
+while True:    
+    gps_data = getGPS()
+    print(gps_data)

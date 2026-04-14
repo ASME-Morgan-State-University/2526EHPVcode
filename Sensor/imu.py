@@ -1,34 +1,42 @@
-import random
+import FaBo9Axis_MPU9250
+import time
+import sys
+
+mpu9250 = FaBo9Axis_MPU9250.MPU9250()
 def getPA():
-    try:
-        random_numbers = [float(random.randint(1, 100)) for _ in range(3)]
-        xaccel = random_numbers[0]
-        yaccel = random_numbers[1]
-        zaccel = random_numbers[2]
-        return xaccel, yaccel, zaccel
-    except Exception as e:
-        print(f"Error getting IMU data: {e}")
-        return 0
+  try:
+    while True:
+        accel = mpu9250.readAccel()
+        xaccel =(accel['x'])
+        yaccel =(accel['y'])
+        zaccel = (accel['z'])
+        return xaccel , yaccel, zaccel
+  except KeyboardInterrupt:
+    sys.exit()
 
 def getAttitude():
-    try:
-        random_numbers = [float(random.randint(1, 100)) for _ in range(3)]
-        P= random_numbers[0]
-        Y = random_numbers[1]
-        R = random_numbers[2]
-        return P, Y, R
-    except Exception as e:
-        print(f"Error getting IMU data: {e}")
-        return 0
-
+  try:
+    while True:
+        gyro = mpu9250.readGyro()
+        P = gyro['x']
+        Y = gyro['y']
+        R = gyro['z']
+        return P, Y , R
+  except KeyboardInterrupt:
+    sys.exit()
 def getMagnetometer():
- try:
-        random_numbers = [float(random.randint(1, 100)) for _ in range(3)]
-        xmag = random_numbers[0]
-        ymag = random_numbers[1]
-        zmag = random_numbers[2]
-        return xmag, ymag, zmag
- except Exception as e:
-        print(f"Error getting IMU data: {e}")
-        return 0
-    
+  try:
+    while True:
+      mag = mpu9250.readMagnet()
+      xmag = (mag['x'])
+      ymag = (mag['y'])
+      zmag = (mag['z'])
+      return xmag,ymag, zmag
+  except KeyboardInterrupt:
+    sys.exit()
+
+# while True:
+#   print(getPA())
+#   print(getAttitude())
+#   print(getMagetometer())
+#   time.sleep(0.1)
