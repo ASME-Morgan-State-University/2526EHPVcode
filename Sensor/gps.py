@@ -30,9 +30,6 @@ def getGPS():
                     longitude = data_parts[4]
                     altitude = data_parts[9]
                     # Print extracted information
-                    print(f"- Latitude: {latitude}")
-                    print(f"- Longitude: {longitude}")
-                    print(f"- Altitude: {altitude} meters")
                     return latitude,longitude,altitude
                     # You can add more processing as needed
             time.sleep(1)
@@ -43,7 +40,3 @@ def getGPS():
     if result: 
         latitude,longitude,altitude = result
     
-
-while True:    
-    gps_data = getGPS()
-    print(gps_data)
