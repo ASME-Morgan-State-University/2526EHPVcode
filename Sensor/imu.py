@@ -24,7 +24,7 @@ def getAttitude():
         return P, Y , R
   except KeyboardInterrupt:
     sys.exit()
-def getMagetometer():
+def getMagnetometer():
   try:
     while True:
       mag = mpu9250.readMagnet()
@@ -35,8 +35,8 @@ def getMagetometer():
   except KeyboardInterrupt:
     sys.exit()
 
-while True:
-  print(getPA())
-  print(getAttitude())
-  print(getMagetometer())
-  time.sleep(0.1)
+# while True:
+#   print(getPA())
+#   print(getAttitude())
+#   print(getMagetometer())
+#   time.sleep(0.1)
