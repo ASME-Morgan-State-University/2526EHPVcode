@@ -84,7 +84,7 @@ def handle_disconnect():
 async def temp_sensors():
     global temp, Hum
     while True:
-        temp = await asyncio.to_thread(Temp.getTemperature)
+        temp = await asyncio.to_thread(Temp.getTemperature,bus)
         Hum = await asyncio.to_thread(Temp.getHumidity)
         await asyncio.sleep(0.1)
         
