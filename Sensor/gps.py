@@ -11,37 +11,39 @@ import serial
 import time
 
 GPS_BAUD = 9600
-GPS= serial.Serial('/dev/serial10'.GPS_BAUD, timeout=1)
 # Create serial object for GPS
 GPS = serial.Serial('/dev/serial0', GPS_BAUD, timeout=1)
-def getGPS()
-try:
-    while True:
-        if GPS.in_waiting > 0:
-            gps_data = GPS.readline().decode('utf-8').strip()
+def getGPS():
+    try:
+        while True:
+            if GPS.in_waiting > 0:
+                gps_data = GPS.readline().decode('utf-8').strip()
 
-            if gps_data.startswith('$GPGGA'):
-                # Process GPS data using TinyGPS++
-                # You may need to adapt this part based on the structure of your GPS data
-                print(f"Received GPS data: {gps_data}")
+                if gps_data.startswith('$GPGGA'):
+                    # Process GPS data using TinyGPS++
+                    # You may need to adapt this part based on the structure of your GPS data
+                    print(f"Received GPS data: {gps_data}")
 
-                # Extract relevant information
-                data_parts = gps_data.split(',')
-                latitude = data_parts[2]
-                longitude = data_parts[4]
-                altitude = data_parts[9]
-                # Print extracted information
-                print(f"- Latitude: {latitude}")
-                print(f"- Longitude: {longitude}")
-                print(f"- Altitude: {altitude} meters")
-                return latitude,longitude,altitude
-                # You can add more processing as needed
-        time.sleep(1)
-except KeyboardInterrupt:
-    print("\nExiting the script.")
-    GPS.close()
-  result =getGPS()
-   if result: 
-   latitude,longitude,altitude = result
+                    # Extract relevant information
+                    data_parts = gps_data.split(',')
+                    latitude = data_parts[2]
+                    longitude = data_parts[4]
+                    altitude = data_parts[9]
+                    # Print extracted information
+                    print(f"- Latitude: {latitude}")
+                    print(f"- Longitude: {longitude}")
+                    print(f"- Altitude: {altitude} meters")
+                    return latitude,longitude,altitude
+                    # You can add more processing as needed
+            time.sleep(1)
+    except KeyboardInterrupt:
+        print("\nExiting the script.")
+        GPS.close()
+        result =getGPS()
+    if result: 
+        latitude,longitude,altitude = result
     
 
+while True:    
+    gps_data = getGPS()
+    print(gps_data)
