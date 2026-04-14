@@ -8,31 +8,31 @@ def getPA():
     while True:
         accel = mpu9250.readAccel()
         xaccel =(accel['x'])
-        yaccel =(acccle['y'])
-        zaccel = (accle['z'])
+        yaccel =(accel['y'])
+        zaccel = (accel['z'])
         return xaccel , yaccel, zaccel
-     except KeyboardInterrupt:
-     sys.exit()
+  except KeyboardInterrupt:
+    sys.exit()
 
 def getAttitude():
-   try:
-     while True:
+  try:
+    while True:
         gyro = mpu9250.readGyro()
         P = gyro['x']
         Y = gyro['y']
         R = gyro['z']
-       return P, Y , R
-     except KeyboardInterrupt:
-     sys.exit()
+        return P, Y , R
+  except KeyboardInterrupt:
+    sys.exit()
 def getMagetometer():
-   try:
-      while True:
-        mag = mpu9250.readMagnet()
-        xmag = (mag['x'])
-        ymag = (mag['y'])
-        zmag = (mag['z'])
-       return xmag,ymag, zmag
-except KeyboardInterrupt:
+  try:
+    while True:
+      mag = mpu9250.readMagnet()
+      xmag = (mag['x'])
+      ymag = (mag['y'])
+      zmag = (mag['z'])
+      return xmag,ymag, zmag
+  except KeyboardInterrupt:
     sys.exit()
 
 while True:
