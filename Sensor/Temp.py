@@ -73,25 +73,25 @@ def getTemperature(bus):
     except Exception as e:
         sys.exit(f"Error reading AHT21: {e}")
 
-def main():
-    try:
-        bus = smbus2.SMBus(1)  # I2C bus 1 on Raspberry Pi
-    except FileNotFoundError:
-        sys.exit("I2C bus not found. Enable I2C in raspi-config.")
+# def main():
+#     try:
+#         bus = smbus2.SMBus(1)  # I2C bus 1 on Raspberry Pi
+#     except FileNotFoundError:
+#         sys.exit("I2C bus not found. Enable I2C in raspi-config.")
 
-    aht21_soft_reset(bus)
-    aht21_init(bus)
+#     aht21_soft_reset(bus)
+#     aht21_init(bus)
 
-    try:
-        while True:
-            temp = getTemperature(bus)
-            hum = getHumidity(bus)
-            print(f"{temp}  {hum}")
-            time.sleep(2)
-    except KeyboardInterrupt:
-        print("\nExiting...")
-    finally:
-        bus.close()
+#     try:
+#         while True:
+#             temp = getTemperature(bus)
+#             hum = getHumidity(bus)
+#             print(f"{temp}  {hum}")
+#             time.sleep(2)
+#     except KeyboardInterrupt:
+#         print("\nExiting...")
+#     finally:
+#         bus.close()
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
