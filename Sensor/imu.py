@@ -36,7 +36,7 @@ def getMagetometer():
     sys.exit()
 
 while True:
-  getPA()
-  getAttitude()
-  getMagetometer()
+  print(getPA())
+  print(getAttitude())
+  print(getMagetometer())
   time.sleep(0.1)
