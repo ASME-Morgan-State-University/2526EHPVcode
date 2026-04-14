@@ -70,7 +70,11 @@ def main():
     while True:
         temp, hum = aht21_read(bus)
         print(f"Temperature: {temp} °C, Humidity: {hum} %")
-        time.sleep(2)
+        time.sleep(2) 
+    except keyboardInterrupt:
+     print("\nExiting...")
+   finally :
+    bus.close()
 
 if __name__ == "__main__":
     main()

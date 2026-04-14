@@ -9,10 +9,9 @@ https://newbiely.com/tutorials/raspberry-pi/raspberry-pi-gps
 
 import serial
 import time
-from datetime import datetime
 
 GPS_BAUD = 9600
-
+GPS= serial.Serial('/dev/serial10'.GPS_BAUD, timeout=1)
 # Create serial object for GPS
 GPS = serial.Serial('/dev/serial0', GPS_BAUD, timeout=1)
 def getGPS()
@@ -35,12 +34,14 @@ try:
                 print(f"- Latitude: {latitude}")
                 print(f"- Longitude: {longitude}")
                 print(f"- Altitude: {altitude} meters")
-
+                return latitude,longitude,altitude
                 # You can add more processing as needed
-
         time.sleep(1)
 except KeyboardInterrupt:
     print("\nExiting the script.")
     GPS.close()
-    return  lat, lon, Sc
+  result =getGPS()
+   if result: 
+   latitude,longitude,altitude = result
+    
 
